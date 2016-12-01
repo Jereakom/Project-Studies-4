@@ -5,39 +5,39 @@
  */
 
 import React, { Component } from 'react';
+import Map from './scenes/Map.js'
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Navigator,
 } from 'react-native';
 
 export default class thegrid extends Component {
+
+  watchID: ?number = null;
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
+      <Navigator
+        initialRoute={{ title: 'Main view', index: 0 }}
+        renderScene={(route, navigator) => {
+          return <Map title={route.title} />
+        }}
+      />
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
+   ...StyleSheet.absoluteFillObject,
+   height: 500,
+   width: 325,
+   justifyContent: 'flex-end',
+   alignItems: 'center',
+ },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
