@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import Message from './Message.js';
 import {
@@ -16,8 +10,11 @@ import {
   TouchableHighlight,
   Dimensions,
   Image,
+  CameraRoll
 } from 'react-native';
 import MapView from 'react-native-maps';
+import Camera from './Camera.js';
+import Button from 'react-native-button';
 import guy from './src/guy.png';
 const { width, height } = Dimensions.get('window');
 let id = 0;
@@ -35,6 +32,7 @@ export default class Map extends Component {
       markers: [],
       viewChange: undefined,
       message: undefined,
+      image: undefined,
     };
   }
 
@@ -69,11 +67,22 @@ export default class Map extends Component {
       const ViewChange = this.state.viewChange;
       return (
         <ViewChange>
-          <Image style={{height:250, width:250}} source={require('./src/juma.jpg')}></Image>
+          <Image style={{height:250, width:250}} source={{uri: this.state.image}}></Image>
           <Text style={{color:"white", fontSize:20}}>{this.state.message}</Text>
         </ViewChange>
       );
     }
+    CameraRoll.getPhotos({first: 5}).done(
+       (data) =>{
+          console.log(data);
+         this.setState({
+           image: data.edges[0].node.image.uri
+         })
+       },
+       (error) => {
+         console.warn(error);
+       }
+     );
     return (
       <View style={styles.container}>
         <MapView
@@ -116,6 +125,9 @@ export default class Map extends Component {
           style={{height: 40, width: width}}
           placeholder="Type here to leave a message"
         />
+        <TouchableHighlight onPress={() => this.setState({viewChange: Camera})}>
+          <Text>Take a picture</Text>
+        </TouchableHighlight>
       </View>
     );
   }

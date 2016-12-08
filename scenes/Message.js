@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { PropTypes } from 'react';
 import Map from './Map.js';
 import {
@@ -12,7 +6,8 @@ import {
   Text,
   View,
   Dimensions,
-  BackAndroid
+  BackAndroid,
+  ScrollView
 } from 'react-native';
 let id = 0;
 const { width, height } = Dimensions.get('window');
@@ -50,13 +45,11 @@ export default class Message extends React.Component {
       );
     }
     return (
-      <View style={[styles.cont, this.props.style]}>
+      <ScrollView contentContainerStyle={[styles.cont, this.props.style]}>
         <View style={styles.bubble}>
           {this.props.children}
         </View>
-        <View style={styles.arrowBorder} />
-        <View style={styles.arrow} />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -76,25 +69,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#4da2ab',
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderRadius: 6,
-    borderColor: '#007a87',
-    borderWidth: 0.5,
-  },
-  arrow: {
-    backgroundColor: 'transparent',
-    borderWidth: 16,
-    borderColor: 'transparent',
-    borderTopColor: '#4da2ab',
-    alignSelf: 'center',
-    marginTop: -32,
-  },
-  arrowBorder: {
-    backgroundColor: 'transparent',
-    borderWidth: 16,
-    borderColor: 'transparent',
-    borderTopColor: '#007a87',
-    alignSelf: 'center',
-    marginTop: -0.5,
   },
 });
 
