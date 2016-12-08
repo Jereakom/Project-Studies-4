@@ -33,6 +33,8 @@ export default class Map extends Component {
       latitude: 0.0,
       longitude: 0.0,
       markers: [],
+      viewChange: undefined,
+      message: undefined,
     };
   }
 
@@ -63,6 +65,15 @@ export default class Map extends Component {
   render() {
     this.lat = this.state.latitude
     this.lon = this.state.longitude
+    if (this.state.viewChange) {
+      const ViewChange = this.state.viewChange;
+      return (
+        <ViewChange>
+          <Image style={{height:250, width:250}} source={require('./src/juma.jpg')}></Image>
+          <Text style={{color:"white", fontSize:20}}>{this.state.message}</Text>
+        </ViewChange>
+      );
+    }
     return (
       <View style={styles.container}>
         <MapView
@@ -83,13 +94,8 @@ export default class Map extends Component {
               key={marker.key}
               coordinate={marker.coordinate}
               pinColor={marker.pinColor}
-              image={marker.image}>
-              <MapView.Callout tooltip onPress={() => marker.ref.hideCallout()} style={styles.customView}>
-                <Message>
-                  <Image style={{height:250, width:250}} source={require('./src/juma.jpg')}></Image>
-                  <Text style={{color:"white", fontSize:20}}>{marker.description}</Text>
-                </Message>
-              </MapView.Callout>
+              image={marker.image}
+              onPress={() => this.setState({viewChange: Message, message: marker.description})}>
             </MapView.Marker>
           ))}
         </MapView>

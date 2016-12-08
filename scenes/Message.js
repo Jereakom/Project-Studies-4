@@ -5,12 +5,14 @@
  */
 
 import React, { PropTypes } from 'react';
+import Map from './Map.js';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
   Dimensions,
+  BackAndroid
 } from 'react-native';
 let id = 0;
 const { width, height } = Dimensions.get('window');
@@ -22,15 +24,39 @@ const propTypes = {
 
 export default class Message extends React.Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      viewChange: undefined,
+    };
+  }
+
+  componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+      this.setState({viewChange: Map})
+      return true;
+    });
+  }
+
+  componentWillUnmount(){
+    BackAndroid.removeEventListener('hardwareBackPress');
+  }
+
   render() {
+    if (this.state.viewChange) {
+      const ViewChange = this.state.viewChange;
+      return (
+        <ViewChange />
+      );
+    }
     return (
-        <View style={[styles.cont, this.props.style]}>
-          <View style={styles.bubble}>
-            {this.props.children}
-          </View>
-          <View style={styles.arrowBorder} />
-          <View style={styles.arrow} />
+      <View style={[styles.cont, this.props.style]}>
+        <View style={styles.bubble}>
+          {this.props.children}
         </View>
+        <View style={styles.arrowBorder} />
+        <View style={styles.arrow} />
+      </View>
     );
   }
 }
