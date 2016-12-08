@@ -15,7 +15,7 @@ import {
   Navigator,
   TouchableHighlight,
   Dimensions,
-  Image
+  Image,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import guy from './src/guy.png';
@@ -39,23 +39,13 @@ export default class Map extends Component {
   watchID: ?number = null;
 
   componentDidMount() {
+    this.di = 0;
     navigator.geolocation.getCurrentPosition(
       (position) => {
         var latitude = parseFloat(position["coords"]["latitude"]);
         var longitude = parseFloat(position["coords"]["longitude"]);
         this.setState({latitude: latitude});
         this.setState({longitude: longitude});
-        this.setState({
-          markers: [
-            ...this.state.markers,
-            {
-              coordinate: {latitude:this.state.latitude,
-                longitude:this.state.longitude},
-              image:guy,
-              key:id++
-            },
-          ],
-        });
       },
       (error) => alert(JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
@@ -70,28 +60,16 @@ export default class Map extends Component {
     navigator.geolocation.clearWatch(this.watchID);
   }
 
-  renderScene=(route, navigator) => {
-    return <Message title={route.title}  message={route.message} />
-  }
-
-  markerClick(msg){
-    console.log(msg)
-    this.props.navigator.push({
-      message: msg,
-    })
-    return (
-      <Navigator
-        initialRoute={{ title: 'Map', index: 0 }}
-        renderScene={this.renderScene}>
-      </Navigator>
-    )
-  }
-
   render() {
+    this.lat = this.state.latitude
+    this.lon = this.state.longitude
     return (
       <View style={styles.container}>
         <MapView
+          showsUserLocation={true}
+          showsMyLocationButton={true}
           style={styles.map}
+          toolbarEnabled={false}
           initialRegion={{
             latitude: this.state.latitude,
             longitude: this.state.longitude,
@@ -100,12 +78,13 @@ export default class Map extends Component {
           }}>
           {this.state.markers.map(marker => (
             <MapView.Marker
+              ref={ref => { marker.ref = ref; }}
               style={{height : 50, width : 50}}
               key={marker.key}
               coordinate={marker.coordinate}
               pinColor={marker.pinColor}
               image={marker.image}>
-              <MapView.Callout tooltip style={styles.customView}>
+              <MapView.Callout tooltip onPress={() => marker.ref.hideCallout()} style={styles.customView}>
                 <Message>
                   <Image style={{height:250, width:250}} source={require('./src/juma.jpg')}></Image>
                   <Text style={{color:"white", fontSize:20}}>{marker.description}</Text>
@@ -120,15 +99,14 @@ export default class Map extends Component {
               markers: [
                 ...this.state.markers,
                 {
-                  coordinate: {latitude:this.state.latitude, longitude:this.state.longitude},
+                  key:id++,
+                  coordinate: {latitude:this.lat, longitude:this.lon},
                   description:event.nativeEvent.text,
                   pinColor:'#00ff00',
-                  key:id++
                 },
               ],
             })
           }
-          returnKeyType='go'
           style={{height: 40, width: width}}
           placeholder="Type here to leave a message"
         />
@@ -146,16 +124,16 @@ const styles = StyleSheet.create({
     width: width,
   },
   container: {
-   ...StyleSheet.absoluteFillObject,
-   height: height-40,
-   width: width,
-   justifyContent: 'flex-end',
-   alignItems: 'center',
- },
- map: {
-   ...StyleSheet.absoluteFillObject,
-   height: height-80,
- },
+    ...StyleSheet.absoluteFillObject,
+    height: height-40,
+    width: width,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    height: height-80,
+  },
 });
 
 AppRegistry.registerComponent('thegrid', () => thegrid);

@@ -10,7 +10,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 let id = 0;
 const { width, height } = Dimensions.get('window');
@@ -21,15 +21,16 @@ const propTypes = {
 };
 
 export default class Message extends React.Component {
+
   render() {
     return (
-      <View style={[styles.cont, this.props.style]}>
-        <View style={styles.bubble}>
-          {this.props.children}
+        <View style={[styles.cont, this.props.style]}>
+          <View style={styles.bubble}>
+            {this.props.children}
+          </View>
+          <View style={styles.arrowBorder} />
+          <View style={styles.arrow} />
         </View>
-        <View style={styles.arrowBorder} />
-        <View style={styles.arrow} />
-      </View>
     );
   }
 }
