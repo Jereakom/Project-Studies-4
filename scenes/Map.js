@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Message from './Message.js';
 import {
   AppRegistry,
@@ -15,14 +15,17 @@ import {
   Navigator,
   TouchableHighlight,
   Dimensions,
-  Image
+  Image,
+  CameraRoll
 } from 'react-native';
 import MapView from 'react-native-maps';
 import guy from './src/guy.png';
+import Camera from './Camera.js';
+import Button from 'react-native-button';
 const { width, height } = Dimensions.get('window');
 let id = 0;
 
-export default class Map extends Component {
+export default class Map extends React.Component {
   props = {
     navigator,
   }
@@ -30,15 +33,18 @@ export default class Map extends Component {
   constructor(props){
     super(props)
     this.state = {
+    example: undefined,
       latitude: 0.0,
       longitude: 0.0,
       markers: [],
+      image: undefined
     };
   }
 
   watchID: ?number = null;
 
   componentDidMount() {
+  this.setState({example: undefined});
     navigator.geolocation.getCurrentPosition(
       (position) => {
         var latitude = parseFloat(position["coords"]["latitude"]);
@@ -58,7 +64,7 @@ export default class Map extends Component {
         });
       },
       (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
       var lastPosition = JSON.stringify(position);
@@ -88,6 +94,21 @@ export default class Map extends Component {
   }
 
   render() {
+  if (this.state.example) {
+        const Example = this.state.example;
+        return <Example />;
+      }
+     CameraRoll.getPhotos({first: 5}).done(
+       (data) =>{
+          console.log(data);
+         this.setState({
+           image: data.edges[0].node.image.uri
+         })
+       },
+       (error) => {
+         console.warn(error);
+       }
+     );
     return (
       <View style={styles.container}>
         <MapView
@@ -107,13 +128,14 @@ export default class Map extends Component {
               image={marker.image}>
               <MapView.Callout tooltip style={styles.customView}>
                 <Message>
-                  <Image style={{height:250, width:250}} source={require('./src/juma.jpg')}></Image>
+                  <Image style={{height:250, width:250}} source={{uri: this.state.image}}></Image>
                   <Text style={{color:"white", fontSize:20}}>{marker.description}</Text>
                 </Message>
               </MapView.Callout>
             </MapView.Marker>
           ))}
         </MapView>
+
         <TextInput
           onSubmitEditing={(event) =>
             this.setState({
@@ -132,15 +154,22 @@ export default class Map extends Component {
           style={{height: 40, width: width}}
           placeholder="Type here to leave a message"
         />
+        <TouchableHighlight onPress={() => this.setState({example: Camera})}>
+                  <Text>Tap me to load the next scene</Text>
+                </TouchableHighlight>
       </View>
     );
   }
+
+  _handlePress(event) {
+       console.log('Pressed!');
+     };
 }
 
 Map.propTypes = {
   provider: MapView.ProviderPropType,
-};
 
+}
 const styles = StyleSheet.create({
   customView: {
     width: width,

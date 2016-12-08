@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "520543359044",
+    "project_id": "memento-4aa3d"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520543359044:android:1178ce3b7579c3ed",
+        "android_client_info": {
+          "package_name": "com.thegrid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "520543359044-27rq8mfot7d7kr6u0652po6vr10g70tk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thegrid",
+            "certificate_hash": "654C6D9E34E9F708DC8D57850EEE4E9078CB32D3"
+          }
+        },
+        {
+          "client_id": "520543359044-b5m4tkdvmlpd2pq4eu9j8gafmpeibtlk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAymZADiuPDtOjWN3cM2s7XE89zxXWHKJM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

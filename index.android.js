@@ -5,7 +5,8 @@
  */
 
 import React, { Component } from 'react';
-import Map from './scenes/Map.js'
+import Map from './scenes/Map.js';
+import Camera from './scenes/Camera.js';
 import {
   AppRegistry,
   StyleSheet,
@@ -14,7 +15,7 @@ import {
   Navigator,
 } from 'react-native';
 
-export default class thegrid extends Component {
+export default class thegrid extends React.Component {
 
   watchID: ?number = null;
 
@@ -23,7 +24,9 @@ export default class thegrid extends Component {
       <Navigator
         initialRoute={{ title: 'Main view', index: 0 }}
         renderScene={(route, navigator) => {
-          return <Map title={route.title} />
+          return <Map title={route.title}
+
+           />
         }}
       />
     );
