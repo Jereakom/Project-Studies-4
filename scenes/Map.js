@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Camera from './Camera.js';
+import Friendlist from './Friendlist.js';
 import Button from 'react-native-button';
 import guy from './src/guy.png';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
@@ -47,7 +48,7 @@ export default class Map extends Component {
         this.setState({longitude: longitude});
       },
       (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
       var lastPosition = JSON.stringify(position);
@@ -64,12 +65,19 @@ export default class Map extends Component {
     this.lon = this.state.longitude
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
+      if (ViewChange == Message){
       return (
         <ViewChange>
           <Image style={{height:250, width:250}} source={{uri: this.state.image}}></Image>
           <Text style={{color:"white", fontSize:20}}>{this.state.message}</Text>
         </ViewChange>
       );
+    }
+    else if (ViewChange == Friendlist || ViewChange == Camera) {
+    return (
+      <ViewChange/>
+    );
+  }
     }
     CameraRoll.getPhotos({first: 5}).done(
        (data) =>{
@@ -84,8 +92,22 @@ export default class Map extends Component {
      );
     return (
       <MenuContext style={{ flex: 1 }}>
-      <TopNavigation/>
-      <View style={styles.container}>
+      <View style={{ padding: 10, flexDirection: 'row', backgroundColor: '#324563' }}>
+        <View style={{ flex: 1 }}><Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Memento</Text></View>
+        <Menu>
+          <MenuTrigger>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>MENU</Text>
+          </MenuTrigger>
+          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 100, backgroundColor: '#324563'}}>
+            <MenuOption value={1}>
+            <TouchableHighlight onPress={() => this.setState({viewChange: Friendlist})}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Friendlist</Text>
+            </TouchableHighlight>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </View>
+            <View style={styles.container}>
         <MapView
           showsUserLocation={true}
           showsMyLocationButton={true}
@@ -138,24 +160,7 @@ export default class Map extends Component {
 Map.propTypes = {
   provider: MapView.ProviderPropType,
 };
-const TopNavigation = () => (
-  <View style={{ padding: 10, flexDirection: 'row', backgroundColor: 'black' }}>
-    <View style={{ flex: 1 }}><Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Memento</Text></View>
-    <Menu onSelect={(value) => alert(`User selected the number ${value}`)}>
-      <MenuTrigger>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>&#8942;</Text>
-      </MenuTrigger>
-      <MenuOptions>
-        <MenuOption value={1}>
-          <Text>One</Text>
-        </MenuOption>
-        <MenuOption value={2}>
-          <Text>Two</Text>
-        </MenuOption>
-      </MenuOptions>
-    </Menu>
-  </View>
-);
+
 const styles = StyleSheet.create({
   customView: {
     width: width,
@@ -176,6 +181,13 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
     height: height-150,
+  },
+  menuOptions: {
+    marginTop: 30,
+    borderColor: '#ccc',
+    borderWidth: 2,
+    width: 300,
+    height: 200
   },
 });
 
