@@ -16,13 +16,12 @@ import MapView from 'react-native-maps';
 import Camera from './Camera.js';
 import Button from 'react-native-button';
 import guy from './src/guy.png';
+import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 const { width, height } = Dimensions.get('window');
 let id = 0;
 
 export default class Map extends Component {
-  props = {
-    navigator,
-  }
+
 
   constructor(props){
     super(props)
@@ -84,6 +83,8 @@ export default class Map extends Component {
        }
      );
     return (
+      <MenuContext style={{ flex: 1 }}>
+      <TopNavigation/>
       <View style={styles.container}>
         <MapView
           showsUserLocation={true}
@@ -129,6 +130,7 @@ export default class Map extends Component {
           <Text>Take a picture</Text>
         </TouchableHighlight>
       </View>
+      </MenuContext>
     );
   }
 }
@@ -136,21 +138,44 @@ export default class Map extends Component {
 Map.propTypes = {
   provider: MapView.ProviderPropType,
 };
-
+const TopNavigation = () => (
+  <View style={{ padding: 10, flexDirection: 'row', backgroundColor: 'black' }}>
+    <View style={{ flex: 1 }}><Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Memento</Text></View>
+    <Menu onSelect={(value) => alert(`User selected the number ${value}`)}>
+      <MenuTrigger>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>&#8942;</Text>
+      </MenuTrigger>
+      <MenuOptions>
+        <MenuOption value={1}>
+          <Text>One</Text>
+        </MenuOption>
+        <MenuOption value={2}>
+          <Text>Two</Text>
+        </MenuOption>
+      </MenuOptions>
+    </Menu>
+  </View>
+);
 const styles = StyleSheet.create({
   customView: {
     width: width,
   },
+  menuTriggerText: {
+    color: 'lightgrey',
+    fontWeight: '600',
+    fontSize: 20
+  },
   container: {
     ...StyleSheet.absoluteFillObject,
-    height: height-40,
+    marginTop: 45,
+    height: height-85,
     width: width,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: height-80,
+    height: height-150,
   },
 });
 
