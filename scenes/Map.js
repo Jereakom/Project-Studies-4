@@ -6,20 +6,25 @@ import {
   Text,
   View,
   TextInput,
+  AsyncStorage,
   Navigator,
   TouchableHighlight,
   Dimensions,
   Image,
-  CameraRoll
+  CameraRoll,
+  ActivityIndicator
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Camera from './Camera.js';
+import login from './login.js';
 import Friendlist from './Friendlist.js';
 import Button from 'react-native-button';
 import guy from './src/guy.png';
+import menu_icon from './src/menu_icon.png';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 const { width, height } = Dimensions.get('window');
 let id = 0;
+const username = undefined;
 
 export default class Map extends Component {
 
@@ -33,6 +38,8 @@ export default class Map extends Component {
       viewChange: undefined,
       message: undefined,
       image: undefined,
+      showMap: false,
+      isLoggedIn: false
     };
   }
 
@@ -54,6 +61,19 @@ export default class Map extends Component {
       var lastPosition = JSON.stringify(position);
       this.setState({lastPosition});
     });
+    this.setState({showMap: true});
+    CameraRoll.getPhotos({first: 5}).done(
+       (data) =>{
+          console.log(data);
+         this.setState({
+           image: data.edges[0].node.image.uri
+         })
+       },
+       (error) => {
+         console.warn(error);
+       }
+     );
+     this.isLoggedIn();
   }
 
   componentWillUnmount() {
@@ -61,6 +81,7 @@ export default class Map extends Component {
   }
 
   render() {
+    if (this.state.showMap){
     this.lat = this.state.latitude
     this.lon = this.state.longitude
     if (this.state.viewChange) {
@@ -73,35 +94,52 @@ export default class Map extends Component {
         </ViewChange>
       );
     }
-    else if (ViewChange == Friendlist || ViewChange == Camera) {
+    else if (ViewChange == Friendlist || ViewChange == Camera || ViewChange == login) {
     return (
       <ViewChange/>
     );
-  }
     }
-    CameraRoll.getPhotos({first: 5}).done(
-       (data) =>{
-          console.log(data);
-         this.setState({
-           image: data.edges[0].node.image.uri
-         })
-       },
-       (error) => {
-         console.warn(error);
-       }
-     );
+    }
+    if (this.state.isLoggedIn == false) {
+      return (
+        <View style={{height:height, width:width, backgroundColor: '#324563' }}>
+        <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
+        <ActivityIndicator
+          style={[styles.loading, {height: 40}]}
+          size="large"
+        />
+        </View>
+      )
+    }
+    else {
     return (
       <MenuContext style={{ flex: 1 }}>
-      <View style={{ padding: 10, flexDirection: 'row', backgroundColor: '#324563' }}>
-        <View style={{ flex: 1 }}><Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Memento</Text></View>
+      <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
+        <View style={{ flex: 1}}>
+        <Image
+          style={{flex:1, height:40, width:150, marginTop:5, marginHorizontal:5}}
+          source={require('./src/logo.png')}
+        />
+        </View>
         <Menu>
           <MenuTrigger>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>MENU</Text>
+          <Image
+            style={{height:45, width:45}}
+            source={require('./src/menu_icon.png')}
+          />
           </MenuTrigger>
-          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 100, backgroundColor: '#324563'}}>
-            <MenuOption value={1}>
+          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 150, backgroundColor: '#324563'}}>
+          <MenuOption value={1}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{username}</Text>
+          </MenuOption>
+            <MenuOption value={2}>
             <TouchableHighlight onPress={() => this.setState({viewChange: Friendlist})}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Friendlist</Text>
+            </TouchableHighlight>
+            </MenuOption>
+            <MenuOption value={3}>
+            <TouchableHighlight onPress={() => this.logout()}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>LOGOUT</Text>
             </TouchableHighlight>
             </MenuOption>
           </MenuOptions>
@@ -155,6 +193,44 @@ export default class Map extends Component {
       </MenuContext>
     );
   }
+  }
+  else {
+    return (
+      <ActivityIndicator
+        style={[styles.loading, {height: 80}]}
+        size="large"
+      />
+    )
+  }
+}
+
+async logout() {
+  try {
+    await AsyncStorage.removeItem('id_token');
+    this.setState({viewChange: login});
+  } catch (error) {
+    console.log('AsyncStorage error: ' + error.message);
+  }
+}
+
+async isLoggedIn() {
+  try {
+const value = await AsyncStorage.getItem('id_token');
+username = value;
+console.log("id_token : " + value);
+if (value !== null){
+  this.setState({isLoggedIn: true})
+  console.log("is logged in");
+}
+else {
+  console.log("is NOT logged in");
+  this.setState({viewChange: login});
+}
+} catch (error) {
+// Error retrieving data
+}
+}
+
 }
 
 Map.propTypes = {
@@ -162,6 +238,11 @@ Map.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  loading: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+  },
   customView: {
     width: width,
   },
