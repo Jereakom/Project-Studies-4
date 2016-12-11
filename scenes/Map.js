@@ -26,7 +26,7 @@ import CreatePost from './CreatePost.js';
 import haversine from 'haversine';
 const { width, height } = Dimensions.get('window');
 let id = 0;
-const username = undefined;
+const user_id = undefined;
 const propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object,
@@ -151,9 +151,6 @@ export default class Map extends Component {
   }
 
   render() {
-    if (this.state.showMap){
-    this.lat = this.state.latitude
-    this.lon = this.state.longitude
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       if (ViewChange == Message) {
@@ -168,22 +165,11 @@ export default class Map extends Component {
           )
         }
       }
-      else if (ViewChange == Friendlist) {
-        return (
-          <ViewChange/>
-        );
-      } else if (ViewChange == CreatePost) {
-        return (
-          <ViewChange/>
-        )
-      }
-      else if (ViewChange == Friendlist || ViewChange == Camera || ViewChange == login) {
+      else if (ViewChange == Friendlist || ViewChange == CreatePost || ViewChange == login) {
       return (
         <ViewChange/>
       );
       }
-    }
-
     }
     if (this.state.isLoggedIn == false) {
       return (
@@ -222,18 +208,18 @@ export default class Map extends Component {
             source={require('./src/menu_icon.png')}
           />
           </MenuTrigger>
-          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 150, backgroundColor: '#324563'}}>
+          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 150, backgroundColor: 'white'}}>
           <MenuOption value={1}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{username}</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
           </MenuOption>
             <MenuOption value={2}>
             <TouchableHighlight onPress={() => this.setState({viewChange: Friendlist})}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Friendlist</Text>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Friendlist</Text>
             </TouchableHighlight>
             </MenuOption>
             <MenuOption value={3}>
             <TouchableHighlight onPress={() => this.logout()}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>LOGOUT</Text>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>LOGOUT</Text>
             </TouchableHighlight>
             </MenuOption>
           </MenuOptions>
@@ -262,8 +248,8 @@ export default class Map extends Component {
             </MapView.Marker>
           ))}
         </MapView>
-        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.setState({viewChange: CreatePost})}>
-          <Text>Create a post at your location</Text>
+        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
+          <Text style={styles.buttonText}>Create a post at your location</Text>
         </TouchableOpacity>
       </View>
       </MenuContext>
@@ -284,7 +270,7 @@ async logout() {
 async isLoggedIn() {
   try {
 const value = await AsyncStorage.getItem('id_token');
-username = value;
+user_id = value;
 console.log("id_token : " + value);
 if (value !== null){
   this.setState({isLoggedIn: true})
@@ -319,6 +305,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 20
   },
+  button: {
+    height: 40,
+    backgroundColor: '#ffffff',
+    borderColor: '#324563',
+    borderWidth: 2,
+    borderRadius: 8,
+    marginBottom: 10,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#324563',
+    alignSelf: 'center'
+  },
   container: {
     ...StyleSheet.absoluteFillObject,
     marginTop: 45,
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: height-150,
+    height: height-90,
   },
   menuOptions: {
     marginTop: 30,

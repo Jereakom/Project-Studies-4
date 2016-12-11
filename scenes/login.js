@@ -54,7 +54,7 @@ export default class login extends Component {
   async _onValueChange(item, selectedValue) {
     try {
       console.log("before AsyncStorage.setItem");
-      await AsyncStorage.setItem(item, selectedValue);
+      await AsyncStorage.setItem(item, selectedValue.toString());
       console.log("after AsyncStorage.setItem");
       this.setState({viewChange: Map});
     } catch (error) {
@@ -90,7 +90,7 @@ console.log(formBody);
       .then((response) => response.json())
       .then((responseData) => {
         console.log("before _onValueChange");
-        this._onValueChange(STORAGE_KEY, responseData.username);
+        this._onValueChange(STORAGE_KEY, responseData.id);
       })
       .done();
     }
