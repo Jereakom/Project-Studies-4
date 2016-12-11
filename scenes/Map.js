@@ -165,16 +165,7 @@ export default class Map extends Component {
           )
         }
       }
-      else if (ViewChange == Friendlist) {
-        return (
-          <ViewChange/>
-        );
-      } else if (ViewChange == CreatePost) {
-        return (
-          <ViewChange/>
-        )
-      }
-      else if (ViewChange == Friendlist || ViewChange == Camera || ViewChange == login) {
+      else if (ViewChange == Friendlist || ViewChange == CreatePost || ViewChange == login) {
       return (
         <ViewChange/>
       );
