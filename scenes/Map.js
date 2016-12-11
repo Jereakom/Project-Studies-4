@@ -151,9 +151,6 @@ export default class Map extends Component {
   }
 
   render() {
-    if (this.state.showMap){
-    this.lat = this.state.latitude
-    this.lon = this.state.longitude
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       if (ViewChange == Message) {
@@ -182,8 +179,6 @@ export default class Map extends Component {
         <ViewChange/>
       );
       }
-    }
-
     }
     if (this.state.isLoggedIn == false) {
       return (
