@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Message from './Message.js';
 import {
   AppRegistry,
@@ -8,6 +8,7 @@ import {
   TextInput,
   AsyncStorage,
   Navigator,
+  TouchableOpacity,
   TouchableHighlight,
   Dimensions,
   Image,
@@ -19,34 +20,39 @@ import Camera from './Camera.js';
 import login from './login.js';
 import Friendlist from './Friendlist.js';
 import Button from 'react-native-button';
-import guy from './src/guy.png';
 import menu_icon from './src/menu_icon.png';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
+import CreatePost from './CreatePost.js';
+import haversine from 'haversine';
 const { width, height } = Dimensions.get('window');
 let id = 0;
 const username = undefined;
+const propTypes = {
+  children: PropTypes.node.isRequired,
+  style: PropTypes.object,
+};
 
 export default class Map extends Component {
-
 
   constructor(props){
     super(props)
     this.state = {
-      latitude: 0.0,
-      longitude: 0.0,
+      latitude: undefined,
+      longitude: undefined,
       markers: [],
       viewChange: undefined,
       message: undefined,
       image: undefined,
       showMap: false,
-      isLoggedIn: false
+      isLoggedIn: false,
+      marker: undefined,
+      messages: [],
     };
   }
 
   watchID: ?number = null;
 
   componentDidMount() {
-    this.di = 0;
     navigator.geolocation.getCurrentPosition(
       (position) => {
         var latitude = parseFloat(position["coords"]["latitude"]);
@@ -59,7 +65,9 @@ export default class Map extends Component {
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
       var lastPosition = JSON.stringify(position);
-      this.setState({lastPosition});
+      if(lastPosition["coords"]) {
+        this.setState({latitude: parseFloat(lastPosition["coords"]["latitude"]), longitude: parseFloat(lastPosition["coords"]["longitude"])});
+      }
     });
     this.setState({showMap: true});
     CameraRoll.getPhotos({first: 5}).done(
@@ -74,10 +82,72 @@ export default class Map extends Component {
        }
      );
      this.isLoggedIn();
+    if(this.props.children) {
+      if(this.props.children["marker"]) {
+        this.setState({
+          markers: [
+            this.props.children["marker"]
+          ],
+        })
+      }
+    }
+    this.getPosts();
+  }
+
+  async getPosts() {
+    let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts');
+    let responseJson = await response.json();
+    for(var i=0;i<responseJson.length;i++) {
+      this.setState({
+        markers: [
+          ...this.state.markers,
+          {
+            key:id++,
+            coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+            description:responseJson[i]["caption"],
+            pinColor:'#00ff00',
+            img:responseJson[i]["picture"],
+          },
+        ],
+      })
+    }
   }
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  messageList() {
+    var start = {
+      latitude: this.state.marker["coordinate"]["latitude"],
+      longitude: this.state.marker["coordinate"]["longitude"]
+    };
+    var messages= [
+      {
+        key: id++,
+        caption: this.state.marker["description"],
+        image: this.state.marker["img"],
+      },
+    ]
+    console.log(messages);
+    var end;
+    for(var i=0;i<this.state.markers.length;i++) {
+      end = {
+        latitude: this.state.markers[i]["coordinate"]["latitude"],
+        longitude: this.state.markers[i]["coordinate"]["longitude"]
+      };
+      if(haversine(start,end, {unit: 'meter'})<=10 && this.state.markers[i] != this.state.marker) {
+        messages= [
+          ...messages,
+          {
+            key: id++,
+            caption: this.state.markers[i]["description"],
+            image: this.state.markers[i]["img"]
+          },
+        ]
+      }
+    }
+    return messages;
   }
 
   render() {
@@ -86,19 +156,34 @@ export default class Map extends Component {
     this.lon = this.state.longitude
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
-      if (ViewChange == Message){
+      if (ViewChange == Message) {
+        var messages = this.messageList();
+        if (messages.length > 0){
+          return (
+            <ViewChange>
+              {messages.map(function(message){
+                return <View key={id++} style={styles.bubble}><Image style={{height:250, width:width}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
+              })}
+            </ViewChange>
+          )
+        }
+      }
+      else if (ViewChange == Friendlist) {
+        return (
+          <ViewChange/>
+        );
+      } else if (ViewChange == CreatePost) {
+        return (
+          <ViewChange/>
+        )
+      }
+      else if (ViewChange == Friendlist || ViewChange == Camera || ViewChange == login) {
       return (
-        <ViewChange>
-          <Image style={{height:250, width:250}} source={{uri: this.state.image}}></Image>
-          <Text style={{color:"white", fontSize:20}}>{this.state.message}</Text>
-        </ViewChange>
+        <ViewChange/>
       );
+      }
     }
-    else if (ViewChange == Friendlist || ViewChange == Camera || ViewChange == login) {
-    return (
-      <ViewChange/>
-    );
-    }
+
     }
     if (this.state.isLoggedIn == false) {
       return (
@@ -112,6 +197,15 @@ export default class Map extends Component {
       )
     }
     else {
+
+    if(this.state.latitude && this.state.longitude) {
+      this.lat = this.state.latitude;
+      this.lon = this.state.longitude;
+    } else {
+      this.lat = 0.0;
+      this.lon = 0.0;
+    }
+
     return (
       <MenuContext style={{ flex: 1 }}>
       <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
@@ -145,15 +239,15 @@ export default class Map extends Component {
           </MenuOptions>
         </Menu>
       </View>
-            <View style={styles.container}>
+      <View style={styles.container}>
         <MapView
           showsUserLocation={true}
           showsMyLocationButton={true}
           style={styles.map}
           toolbarEnabled={false}
-          initialRegion={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
+          region={{
+            latitude: this.lat,
+            longitude: this.lon,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}>
@@ -164,45 +258,19 @@ export default class Map extends Component {
               key={marker.key}
               coordinate={marker.coordinate}
               pinColor={marker.pinColor}
-              image={marker.image}
-              onPress={() => this.setState({viewChange: Message, message: marker.description})}>
+              onPress={() => this.setState({viewChange: Message, marker: marker})}>
             </MapView.Marker>
           ))}
         </MapView>
-        <TextInput
-          onSubmitEditing={(event) =>
-            this.setState({
-              markers: [
-                ...this.state.markers,
-                {
-                  key:id++,
-                  coordinate: {latitude:this.lat, longitude:this.lon},
-                  description:event.nativeEvent.text,
-                  pinColor:'#00ff00',
-                },
-              ],
-            })
-          }
-          style={{height: 40, width: width}}
-          placeholder="Type here to leave a message"
-        />
-        <TouchableHighlight onPress={() => this.setState({viewChange: Camera})}>
-          <Text>Take a picture</Text>
-        </TouchableHighlight>
+        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.setState({viewChange: CreatePost})}>
+          <Text>Create a post at your location</Text>
+        </TouchableOpacity>
       </View>
       </MenuContext>
     );
   }
   }
-  else {
-    return (
-      <ActivityIndicator
-        style={[styles.loading, {height: 80}]}
-        size="large"
-      />
-    )
-  }
-}
+
 
 async logout() {
   try {
@@ -257,7 +325,6 @@ const styles = StyleSheet.create({
     height: height-85,
     width: width,
     justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -270,6 +337,11 @@ const styles = StyleSheet.create({
     width: 300,
     height: 200
   },
+  bubble: {
+    alignItems: 'center',
+    width: width,
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    backgroundColor: '#4da2ab',
+  },
 });
-
-AppRegistry.registerComponent('thegrid', () => thegrid);

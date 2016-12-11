@@ -46,9 +46,7 @@ export default class Message extends React.Component {
     }
     return (
       <ScrollView contentContainerStyle={[styles.cont, this.props.style]}>
-        <View style={styles.bubble}>
-          {this.props.children}
-        </View>
+        {this.props.children}
       </ScrollView>
     );
   }
@@ -60,16 +58,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     alignSelf: 'flex-start',
-  },
-  bubble: {
-    alignItems: 'center',
-    width: width,
-    flexDirection: 'column',
-    alignSelf: 'flex-start',
-    backgroundColor: '#4da2ab',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    height: height,
   },
 });
-
-AppRegistry.registerComponent('thegrid', () => thegrid);
