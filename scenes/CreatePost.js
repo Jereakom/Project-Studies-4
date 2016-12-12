@@ -14,7 +14,6 @@ let id = 0;
 const { width, height } = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Camera from './Camera.js';
-
 const propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object,
@@ -84,6 +83,7 @@ export default class CreatePost extends React.Component {
       } else if(ViewChange == Camera) {
         return (
           <ViewChange>
+            {{username: this.props.children["username"]}}
           </ViewChange>
         )
       }
@@ -109,6 +109,7 @@ export default class CreatePost extends React.Component {
                 markers: [
                   ...this.state.markers,
                   {
+                    username:this.props.children["username"],
                     key:id++,
                     coordinate: {latitude:this.lat, longitude:this.lon},
                     description:event.nativeEvent.text,

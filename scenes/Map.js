@@ -9,14 +9,12 @@ import {
   AsyncStorage,
   Navigator,
   TouchableOpacity,
-  TouchableHighlight,
   Dimensions,
   Image,
   CameraRoll,
   ActivityIndicator
 } from 'react-native';
 import MapView from 'react-native-maps';
-import Camera from './Camera.js';
 import login from './login.js';
 import Friendlist from './Friendlist.js';
 import Button from 'react-native-button';
@@ -27,6 +25,7 @@ import haversine from 'haversine';
 const { width, height } = Dimensions.get('window');
 let id = 0;
 const user_id = undefined;
+const username = undefined;
 const propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object,
@@ -61,7 +60,7 @@ export default class Map extends Component {
         this.setState({longitude: longitude});
       },
       (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
+      {enableHighAccuracy: false, maximumAge: 1000000}
     );
     this.watchID = navigator.geolocation.watchPosition((position) => {
       var lastPosition = JSON.stringify(position);
@@ -72,7 +71,6 @@ export default class Map extends Component {
     this.setState({showMap: true});
     CameraRoll.getPhotos({first: 5}).done(
        (data) =>{
-          console.log(data);
          this.setState({
            image: data.edges[0].node.image.uri
          })
@@ -83,6 +81,9 @@ export default class Map extends Component {
      );
      this.isLoggedIn();
     if(this.props.children) {
+      if(this.props.children["latitude"]&&this.props.children["longitude"]) {
+        this.setState({latitude: this.props.children["latitude"], longitude: this.props.children["longitude"]})
+      }
       if(this.props.children["marker"]) {
         this.setState({
           markers: [
@@ -102,6 +103,7 @@ export default class Map extends Component {
         markers: [
           ...this.state.markers,
           {
+            username: responseJson[i]["username"],
             key:id++,
             coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
             description:responseJson[i]["caption"],
@@ -125,11 +127,11 @@ export default class Map extends Component {
     var messages= [
       {
         key: id++,
+        username: this.state.marker["username"],
         caption: this.state.marker["description"],
         image: this.state.marker["img"],
       },
     ]
-    console.log(messages);
     var end;
     for(var i=0;i<this.state.markers.length;i++) {
       end = {
@@ -141,6 +143,7 @@ export default class Map extends Component {
           ...messages,
           {
             key: id++,
+            username: this.state.marker["username"],
             caption: this.state.markers[i]["description"],
             image: this.state.markers[i]["img"]
           },
@@ -159,16 +162,21 @@ export default class Map extends Component {
           return (
             <ViewChange>
               {messages.map(function(message){
-                return <View key={id++} style={styles.bubble}><Image style={{height:250, width:width}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
+                return <View key={id++} style={styles.bubble}><Text key={id++} style={{color:"black", fontSize:20}}>{message.username}</Text><Image style={{height: 400, width:width}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
               })}
             </ViewChange>
           )
         }
-      }
-      else if (ViewChange == Friendlist || ViewChange == CreatePost || ViewChange == login) {
-      return (
-        <ViewChange/>
-      );
+      } else if (ViewChange == CreatePost) {
+        return (
+          <ViewChange>
+            {{username: username}}
+          </ViewChange>
+        );
+      } else {
+        return (
+          <ViewChange />
+        )
       }
     }
     if (this.state.isLoggedIn == false) {
@@ -213,14 +221,14 @@ export default class Map extends Component {
             <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
           </MenuOption>
             <MenuOption value={2}>
-            <TouchableHighlight onPress={() => this.setState({viewChange: Friendlist})}>
+            <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Friendlist</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
             </MenuOption>
             <MenuOption value={3}>
-            <TouchableHighlight onPress={() => this.logout()}>
+            <TouchableOpacity onPress={() => this.logout()}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>LOGOUT</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
             </MenuOption>
           </MenuOptions>
         </Menu>
@@ -228,9 +236,9 @@ export default class Map extends Component {
       <View style={styles.container}>
         <MapView
           showsUserLocation={true}
-          showsMyLocationButton={true}
           style={styles.map}
           toolbarEnabled={false}
+          moveOnMarkerPress={false}
           region={{
             latitude: this.lat,
             longitude: this.lon,
@@ -271,6 +279,8 @@ async isLoggedIn() {
   try {
 const value = await AsyncStorage.getItem('id_token');
 user_id = value;
+const user = await AsyncStorage.getItem('username');
+username = user;
 console.log("id_token : " + value);
 if (value !== null){
   this.setState({isLoggedIn: true})

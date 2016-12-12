@@ -69,7 +69,7 @@ export default class Camera extends React.Component {
       } else {
         return (
           <ViewChange>
-            {{image:this.state.image.imageURI}}
+            {{image:this.state.image.imageURI, username: this.props.children["username"]}}
           </ViewChange>
         )
       }

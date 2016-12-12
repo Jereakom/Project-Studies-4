@@ -41,7 +41,7 @@ export default class Message extends React.Component {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       return (
-        <ViewChange />
+        <ViewChange/>
       );
     }
     return (
