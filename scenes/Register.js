@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import Map from './Map.js';
+import login from './login.js';
 import {
   AppRegistry,
   AsyncStorage,
@@ -10,10 +11,10 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  Dimensions
+  Dimensions,
+  BackAndroid
 } from 'react-native';
 import logo from './src/logo.png';
-import Register from './Register.js';
 const { width, height } = Dimensions.get('window');
 //var t = require('tcomb-form-native');
 var t = require('tcomb-form-native');
@@ -30,7 +31,8 @@ var Form = t.form.Form;
 
 var Person = t.struct({
   username: t.String,
-  password: t.String
+  password: t.String,
+  email: t.String
 });
 
 const options = {
@@ -42,16 +44,30 @@ const options = {
     password: {
       stylesheet: stylesheet,
       underlineColorAndroid:  '#324563'
+    },
+    email: {
+      stylesheet: stylesheet,
+      underlineColorAndroid:  '#324563'
     }
   }
 };
 
-export default class login extends Component {
+export default class Register extends Component {
   constructor(props){
     super(props)
     this.state = {
       viewChange: undefined
     };
+  }
+  componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+      this.setState({viewChange: login})
+      return true;
+    });
+  }
+
+  componentWillUnmount(){
+    BackAndroid.removeEventListener('hardwareBackPress');
   }
 
   async _onValueChange(item, selectedValue) {
@@ -67,11 +83,12 @@ export default class login extends Component {
     }
   };
 
-  _userLogin() {
+  _userRegistration() {
     var value = this.refs['form'].getValue();
     var details = {
     'username': value.username,
-    'password': value.password
+    'password': value.password,
+    'email': value.email
 };
 
 var formBody = [];
@@ -84,7 +101,7 @@ formBody = formBody.join("&");
 console.log(formBody);
     if (value) { // if validation fails, value will be null
        console.log("before fetching");
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/login", {
+       fetch("http://thegrid.northeurope.cloudapp.azure.com/users", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -126,10 +143,7 @@ console.log(formBody);
         </View>
         <View style={styles.row}>
 
-          <TouchableOpacity style={styles.button} onPress={this._userLogin.bind(this)} underlayColor='#ffffff'>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Register})} underlayColor='#ffffff'>
+          <TouchableOpacity style={styles.button} onPress={this._userRegistration.bind(this)} underlayColor='#ffffff'>
             <Text style={styles.buttonText}>Register</Text>
           </TouchableOpacity>
 
