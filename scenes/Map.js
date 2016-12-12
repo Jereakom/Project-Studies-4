@@ -12,7 +12,8 @@ import {
   Dimensions,
   Image,
   CameraRoll,
-  ActivityIndicator
+  ActivityIndicator,
+  ToastAndroid
 } from 'react-native';
 import MapView from 'react-native-maps';
 import login from './login.js';
@@ -153,6 +154,22 @@ export default class Map extends Component {
     return messages;
   }
 
+  showMessages(marker) {
+    var start = {
+      latitude: marker["coordinate"]["latitude"],
+      longitude: marker["coordinate"]["longitude"]
+    };
+    var end = {
+      latitude: this.lat,
+      longitude: this.lon
+    };
+    if(haversine(start,end, {unit: 'meter'})<=500) {
+      this.setState({viewChange: Message, marker: marker})
+    } else {
+      ToastAndroid.show('You are too far away from the post', ToastAndroid.LONG);
+    }
+  }
+
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
@@ -252,7 +269,7 @@ export default class Map extends Component {
               key={marker.key}
               coordinate={marker.coordinate}
               pinColor={marker.pinColor}
-              onPress={() => this.setState({viewChange: Message, marker: marker})}>
+              onPress={() => this.showMessages(marker)}>
             </MapView.Marker>
           ))}
         </MapView>
