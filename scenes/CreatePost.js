@@ -14,6 +14,10 @@ let id = 0;
 const { width, height } = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Camera from './Camera.js';
+import CryptoJS from 'crypto-js';
+import api_key from './cloudinary.js';
+import api_secret from './cloudinary.js';
+import cloud from './cloudinary.js';
 const propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object,
@@ -53,7 +57,27 @@ export default class CreatePost extends React.Component {
     });
   }
 
+  async uploadImage(uri) {
+    let timestamp = (Date.now() / 1000 | 0).toString();
+    let hash_string = 'timestamp=' + timestamp + api_secret
+    let signature = CryptoJS.SHA1(hash_string).toString();
+    let upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload'
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', upload_url);
+    xhr.onload = () => {
+      console.log(xhr);
+    };
+    let formdata = new FormData();
+    formdata.append('file', {uri: uri, type: 'image/png', name: 'upload.png'});
+    formdata.append('timestamp', timestamp);
+    formdata.append('api_key', api_key);
+    formdata.append('signature', signature);
+    await xhr.send(formdata);
+  }
+
   _renderMap() {
+    var img = this.uploadImage(this.state.markers[0].img);
     var details = {
     'username': this.state.markers[0].username,
     'caption': this.state.markers[0].description,
@@ -127,7 +151,7 @@ export default class CreatePost extends React.Component {
                     coordinate: {latitude:this.lat, longitude:this.lon},
                     description:event.nativeEvent.text,
                     pinColor:'#00ff00',
-                    img:'https://placehold.it/250x250',
+                    img:img,
                   },
                 ],
               })
