@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Map from './Map.js';
+import Users from './Users.js';
 import {
   AppRegistry,
   StyleSheet,
@@ -23,11 +24,12 @@ export default class Friendlist extends Component {
   constructor(props){
     super(props)
     this.state = {
-      dataSource: undefined,
+      friend: undefined,
       viewChange: undefined,
     };
   }
   componentDidMount() {
+    Friends = [];
     BackAndroid.addEventListener('hardwareBackPress', () => {
       this.setState({viewChange: Map})
       return true;
@@ -54,12 +56,33 @@ export default class Friendlist extends Component {
     })
    .done();
   }
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 3,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
+        }}
+      />
+    );
+  }
+
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
+      if (ViewChange == Users) {
+      return (
+        <ViewChange>
+          {Friends}
+        </ViewChange>
+      );
+      }
+      else {
       return (
         <ViewChange/>
       );
+      }
     }
     if (this.state.hasFetched == true) {
     return (
@@ -67,11 +90,15 @@ export default class Friendlist extends Component {
       <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
           <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Friends</Text>
       </View>
-      <View style={{flexDirection: 'row', height: height-45, padding: 10, backgroundColor: 'white'}}>
+      <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
     <ListView
       dataSource={this.state.dataSource}
-      renderRow={(rowData) => <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>}
+      renderRow={(rowData) => <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>}
+      renderSeparator={this._renderSeparator}
     />
+    <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Users})}>
+      <Text style={styles.buttonText}>Add a friend</Text>
+    </TouchableOpacity>
       </View>
       </View>
     );
@@ -95,5 +122,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8
-  }
+  },
+  button: {
+    position: 'absolute',
+    bottom:0,
+    left:width/4,
+    height: 45,
+    width: width/2,
+    backgroundColor: '#324563',
+    borderColor: '#5576aa',
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    fontSize: 18,
+    color: 'white',
+    alignSelf: 'center',
+    fontWeight: 'bold'
+  },
 });
