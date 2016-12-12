@@ -72,16 +72,16 @@ export default class login extends Component {
     var details = {
     'username': value.username,
     'password': value.password
-};
+    };
 
-var formBody = [];
-for (var property in details) {
-  var encodedKey = encodeURIComponent(property);
-  var encodedValue = encodeURIComponent(details[property]);
-  formBody.push(encodedKey + "=" + encodedValue);
-}
-formBody = formBody.join("&");
-console.log(formBody);
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    console.log(formBody);
     if (value) { // if validation fails, value will be null
        console.log("before fetching");
        fetch("http://thegrid.northeurope.cloudapp.azure.com/login", {
@@ -113,7 +113,7 @@ console.log(formBody);
       <View style={styles.container}>
         <View style={styles.row}>
           <Image
-            style={{width:width, height:100, marginBottom: 30}}
+            style={{width:width-33, height:100, marginBottom: 30}}
             source={require('./src/logo.png')}
           />
         </View>

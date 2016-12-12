@@ -48,13 +48,35 @@ export default class CreatePost extends React.Component {
       this.setState({lastPosition});
     });
     BackAndroid.addEventListener('hardwareBackPress', () => {
-      this.setState({back: true})
-      this._renderMap();
+      this.setState({viewChange: Map});
       return true;
     });
   }
 
   _renderMap() {
+    var details = {
+    'username': this.state.markers[0].username,
+    'caption': this.state.markers[0].description,
+    'picture': this.state.markers[0].img,
+    'latitude': this.state.markers[0].coordinate["latitude"],
+    'longitude': this.state.markers[0].coordinate["longitude"]
+    };
+
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch("http://thegrid.northeurope.cloudapp.azure.com/posts", {
+       method: "POST",
+       headers: {
+         'Accept': 'application/json',
+         'Content-Type': 'application/x-www-form-urlencoded'
+       },
+       body: formBody
+     })
     this.setState({viewChange: Map});
   }
 
@@ -68,18 +90,10 @@ export default class CreatePost extends React.Component {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       if(ViewChange == Map) {
-        if (this.state.back) {
-          return (
-            <ViewChange>
-            </ViewChange>
-          )
-        } else {
-          return (
-            <ViewChange>
-              {{marker: this.state.markers[0]}}
-            </ViewChange>
-          )
-        }
+        return (
+          <ViewChange>
+          </ViewChange>
+        )
       } else if(ViewChange == Camera) {
         return (
           <ViewChange>
@@ -107,14 +121,13 @@ export default class CreatePost extends React.Component {
             onSubmitEditing={(event) =>
               this.setState({
                 markers: [
-                  ...this.state.markers,
                   {
                     username:this.props.children["username"],
                     key:id++,
                     coordinate: {latitude:this.lat, longitude:this.lon},
                     description:event.nativeEvent.text,
                     pinColor:'#00ff00',
-                    img:img,
+                    img:'https://placehold.it/250x250',
                   },
                 ],
               })

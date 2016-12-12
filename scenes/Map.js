@@ -143,7 +143,7 @@ export default class Map extends Component {
           ...messages,
           {
             key: id++,
-            username: this.state.marker["username"],
+            username: this.state.markers[i]["username"],
             caption: this.state.markers[i]["description"],
             image: this.state.markers[i]["img"]
           },
@@ -205,7 +205,7 @@ export default class Map extends Component {
       <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
         <View style={{ flex: 1}}>
         <Image
-          style={{flex:1, height:40, width:150, marginTop:5, marginHorizontal:5}}
+          style={{flex:1, height:40, width:150, marginHorizontal:5}}
           source={require('./src/logo.png')}
         />
         </View>
