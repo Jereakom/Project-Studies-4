@@ -9,12 +9,14 @@ import {
 	Image,
 	Alert,
 	CameraRoll,
-	BackAndroid
+	BackAndroid,
+	Dimensions,
+	ToastAndroid
 } from 'react-native';
 
 import _ from 'lodash';
 import Immutable from 'seamless-immutable';
-
+import Button from 'react-native-button';
 import {
 	CameraKitGallery,
 	CameraKitCamera,
@@ -23,7 +25,7 @@ import CreatePost from './CreatePost.js';
 import Main from '../index.android.js'
 import menu_icon from './src/menu_icon.png';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
-
+const { width, height } = Dimensions.get('window');
 const FLASH_MODE_AUTO = "auto";
 const FLASH_MODE_ON = "on";
 const FLASH_MODE_OFF = "off";
@@ -70,11 +72,15 @@ export default class Camera extends React.Component {
           </ViewChange>
         );
       } else {
-        return (
-          <ViewChange>
-            {{image:this.state.image.imageURI, username: this.props.children["username"]}}
-          </ViewChange>
-        )
+				if (this.state.image) {
+					return (
+						<ViewChange>
+							{{image:this.state.image.imageURI, username: this.props.children["username"]}}
+						</ViewChange>
+					)
+				} else {
+					ToastAndroid.show("Take a picture first", ToastAndroid.LONG);
+				}
       }
     }
   	return (
@@ -133,8 +139,16 @@ export default class Camera extends React.Component {
 	          </MenuOptions>
 	        </Menu>
 	      </View>
-				<View style={{ flex:1,  backgroundColor: 'gray', marginBottom:8}}>
-					<View style={{flex: 1, flexDirection:'column', backgroundColor:'black'}} onPress={this.onTakeIt.bind(this)}>
+				<View style={{ flex:1,  backgroundColor: 'gray'}}>
+					<View style={{flex: 1, flexDirection:'column', backgroundColor:'black'}}>
+						{this.state.image &&
+							<View style={{flex: 1000}}><Image
+								style={{ flexDirection:'row', backgroundColor: 'white', flex: 900}}
+								source={{uri: this.state.image.imageURI, scale: 3}}
+							/>
+							<TouchableOpacity style={styles.button3} onPress={() => this.setState({image: undefined})}>
+								<Text style={styles.buttonText}>Cancel</Text>
+							</TouchableOpacity></View>}
 						<CameraKitCamera
 							ref={(cam) => {
 	              this.camera = cam;
@@ -146,19 +160,14 @@ export default class Camera extends React.Component {
 	              zoomMode: 'on'
 	            }}
 						/>
-						<TouchableOpacity style={{alignSelf:'center', marginHorizontal: 4}} onPress={this.onTakeIt.bind(this)}>
-							<Text style={{fontSize: 22, color: 'lightgray', backgroundColor: 'hotpink'}}>TAKE IT!</Text>
-						</TouchableOpacity>
 					</View>
 
 					<View style={{flexDirection: 'row'}}>
-	          {this.state.image &&
-	          <Image
-	            style={{ flexDirection:'row', backgroundColor: 'white', width: 100, height: 100}}
-	            source={{uri: this.state.image.imageURI, scale: 3}}
-	          />}
-						<TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.savePicture()}>
-							<Text>BACK</Text>
+						<TouchableOpacity style={styles.button} onPress={this.onTakeIt.bind(this)}>
+							<Text style={styles.buttonText}>Take a picture</Text>
+						</TouchableOpacity>
+						<TouchableOpacity style={styles.button} onPress={() => this.savePicture()}>
+							<Text style={styles.buttonText}>Confirm</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -182,3 +191,32 @@ export default class Camera extends React.Component {
 		this.setState({...this.state, image:newImage});
 	}
 }
+
+const styles = StyleSheet.create({
+  button: {
+		width: width/2,
+    height: 60,
+    backgroundColor: '#ffffff',
+    borderColor: '#000000',
+    borderWidth: 2,
+    borderRadius: 8,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+	button3: {
+		flex: 100,
+		width: width,
+    height: 60,
+    backgroundColor: '#ffffff',
+    borderColor: '#000000',
+    borderWidth: 2,
+    borderRadius: 8,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#324563',
+    alignSelf: 'center'
+  },
+})

@@ -15,7 +15,6 @@ import {
 import logo from './src/logo.png';
 import Register from './Register.js';
 const { width, height } = Dimensions.get('window');
-//var t = require('tcomb-form-native');
 var t = require('tcomb-form-native');
 var _ = require('lodash');
 

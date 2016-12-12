@@ -333,12 +333,11 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   button: {
-    height: 40,
+    height: 60,
     backgroundColor: '#ffffff',
     borderColor: '#324563',
     borderWidth: 2,
     borderRadius: 8,
-    marginBottom: 10,
     alignSelf: 'stretch',
     justifyContent: 'center'
   },
@@ -350,13 +349,13 @@ const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     marginTop: 45,
-    height: height-85,
+    height: height-70,
     width: width,
     justifyContent: 'flex-end',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: height-90,
+    height: height-130,
   },
   menuOptions: {
     marginTop: 30,
