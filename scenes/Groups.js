@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Map from './Map.js';
 import JoinGroups from './JoinGroups.js';
+import CreateGroup from './CreateGroup.js';
 import {
   AppRegistry,
   StyleSheet,
@@ -116,6 +117,9 @@ export default class Groups extends Component {
     <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: JoinGroups})}>
       <Text style={styles.buttonText}>Join a Group</Text>
     </TouchableOpacity>
+    <TouchableOpacity style={styles.button3} onPress={() => this.setState({viewChange: CreateGroup})}>
+      <Text style={styles.buttonText}>Create a Group</Text>
+    </TouchableOpacity>
       </View>
       </View>
     );
@@ -143,7 +147,6 @@ const styles = StyleSheet.create({
   button: {
     position: 'absolute',
     bottom:0,
-    left:width/4,
     height: 45,
     width: width/2,
     backgroundColor: '#324563',
@@ -159,6 +162,19 @@ const styles = StyleSheet.create({
     left:width-100,
     height: 45,
     width: width/4,
+    backgroundColor: '#324563',
+    borderColor: '#5576aa',
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  button3: {
+    position: 'absolute',
+    bottom:0,
+    left:width/2,
+    height: 45,
+    width: width/2,
     backgroundColor: '#324563',
     borderColor: '#5576aa',
     borderWidth: 2,
