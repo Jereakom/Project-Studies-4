@@ -15,13 +15,13 @@ const { width, height } = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Camera from './Camera.js';
 import CryptoJS from 'crypto-js';
-import api_key from './cloudinary.js';
-import api_secret from './cloudinary.js';
-import cloud from './cloudinary.js';
+import api from './cloudinary.js';
 const propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object,
 };
+let xhr = undefined;
+let resp = undefined;
 
 export default class CreatePost extends React.Component {
 
@@ -58,30 +58,46 @@ export default class CreatePost extends React.Component {
   }
 
   async uploadImage(uri) {
+    let api_key = api.api_key;
+    let api_secret = api.api_secret;
+    let cloud = api.cloud;
     let timestamp = (Date.now() / 1000 | 0).toString();
-    let hash_string = 'timestamp=' + timestamp + api_secret
+    let hash_string = 'timestamp=' + timestamp + api_secret;
     let signature = CryptoJS.SHA1(hash_string).toString();
-    let upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload'
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', upload_url);
-    xhr.onload = () => {
-      console.log(xhr);
+    let upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload';
+    let file = {uri: uri, type: 'image/png', name: 'upload.png'};
+    var details = {
+      'file': file,
+      'timestamp': timestamp,
+      'api_key': api_key,
+      'signature': signature
     };
-    let formdata = new FormData();
-    formdata.append('file', {uri: uri, type: 'image/png', name: 'upload.png'});
-    formdata.append('timestamp', timestamp);
-    formdata.append('api_key', api_key);
-    formdata.append('signature', signature);
-    await xhr.send(formdata);
+    var formBody = new FormData();
+    formBody.append('file', {uri: uri, type: 'image/png', name: 'upload.png'});
+    formBody.append('timestamp', timestamp);
+    formBody.append('api_key', api_key);
+    formBody.append('signature', signature);
+    fetch(upload_url, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data'
+      },
+      body: formBody
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      resp = responseData;
+      this._renderMap();
+    })
+    .done();
   }
 
   _renderMap() {
-    var img = this.uploadImage(this.state.markers[0].img);
     var details = {
     'username': this.state.markers[0].username,
     'caption': this.state.markers[0].description,
-    'picture': this.state.markers[0].img,
+    'picture': resp.url,
     'latitude': this.state.markers[0].coordinate["latitude"],
     'longitude': this.state.markers[0].coordinate["longitude"]
     };
@@ -160,7 +176,7 @@ export default class CreatePost extends React.Component {
             placeholder="Type here to leave a message"
           />
         </View>
-        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this._renderMap()}>
+        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
           <Text>Post</Text>
         </TouchableOpacity>
       </View>
