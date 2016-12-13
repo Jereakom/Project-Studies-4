@@ -296,7 +296,7 @@ export default class Map extends Component {
             </MenuOption>
               <MenuOption value={3}>
             <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Friendlist</Text>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Following</Text>
             </TouchableOpacity>
             </MenuOption>
             <MenuOption value={3}>
