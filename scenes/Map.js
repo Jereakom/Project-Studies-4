@@ -31,6 +31,7 @@ const propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object,
 };
+var Friends = [];
 
 export default class Map extends Component {
 
@@ -170,6 +171,56 @@ export default class Map extends Component {
     }
   }
 
+  async friendsPosts() {
+    this.setState({markers : []});
+    const token = await AsyncStorage.getItem('id_token');
+    const user = await AsyncStorage.getItem('username');
+    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/friends")
+   .then((response) => response.json())
+   .then((responseData) => {
+      for(var i=0;i<responseData.length;i++) {
+        Friends.push(responseData[i].username);
+      }
+    })
+   .done();
+   let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts');
+   let responseJson = await response.json();
+   for(var i=0;i<responseJson.length;i++) {
+     for(var o=0;o<Friends.length;o++) {
+       if(responseJson[i]["username"] == Friends[o]) {
+         this.setState({
+           markers: [
+             ...this.state.markers,
+             {
+               username: responseJson[i]["username"],
+               key:id++,
+               coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+               description:responseJson[i]["caption"],
+               pinColor:'#00ff00',
+               img:responseJson[i]["picture"],
+             },
+           ],
+         })
+       }
+     }
+     if(responseJson[i]["username"] == user) {
+       this.setState({
+         markers: [
+           ...this.state.markers,
+           {
+             username: responseJson[i]["username"],
+             key:id++,
+             coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+             description:responseJson[i]["caption"],
+             pinColor:'#00ff00',
+             img:responseJson[i]["picture"],
+           },
+         ],
+       })
+     }
+   }
+  }
+
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
@@ -273,6 +324,9 @@ export default class Map extends Component {
             </MapView.Marker>
           ))}
         </MapView>
+        <TouchableOpacity style={styles.button} onPress={() => this.friendsPosts()}>
+          <Text style={styles.buttonText}>Only show posts by friends</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
           <Text style={styles.buttonText}>Create a post at your location</Text>
         </TouchableOpacity>
