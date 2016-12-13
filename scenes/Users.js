@@ -122,7 +122,7 @@ export default class Users extends Component {
     return (
       <View>
       <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Add a Friend (Tap the name)</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Follow</Text>
       </View>
       <View style={{flexDirection: 'row', height: height-45, width:width, padding: 10, backgroundColor: 'white'}}>
     <ListView

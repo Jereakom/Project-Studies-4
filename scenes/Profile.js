@@ -17,7 +17,9 @@ import {
   ListView
 } from 'react-native';
 const { width, height } = Dimensions.get('window');
-var Friends = [];
+var username = undefined;
+var email = undefined;
+var id = undefined;
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
 export default class Friendlist extends Component {
@@ -34,70 +36,42 @@ export default class Friendlist extends Component {
       this.setState({viewChange: Map})
       return true;
     });
-    this.fetchFriends();
+    this.fetchProfileData();
   }
 
   componentWillUnmount(){
     BackAndroid.removeEventListener('hardwareBackPress');
   }
-  createList() {
-    this.setState({dataSource: ds.cloneWithRows(Friends)})
+
+  async fetchProfileData(){
+    username = await AsyncStorage.getItem('username');
+    email = await AsyncStorage.getItem('email');
+    id = await AsyncStorage.getItem('id_token');
     this.setState({hasFetched: true});
-  }
-  async fetchFriends(){
-    const id = await AsyncStorage.getItem('id_token');
-    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends")
-   .then((response) => response.json())
-   .then((responseData) => {
-      for(var i=0;i<responseData.length;i++) {
-        Friends.push(responseData[i].username);
-      }
-      this.createList();
-    })
-   .done();
-  }
-  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
-    return (
-      <View
-        key={`${sectionID}-${rowID}`}
-        style={{
-          height: adjacentRowHighlighted ? 4 : 3,
-          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
-        }}
-      />
-    );
   }
 
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
-      if (ViewChange == Users) {
-      return (
-        <ViewChange>
-          {Friends}
-        </ViewChange>
-      );
-      }
-      else {
       return (
         <ViewChange/>
       );
-      }
     }
     if (this.state.hasFetched == true) {
     return (
       <View>
       <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Following</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Profile</Text>
       </View>
-      <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
-    <ListView
-      dataSource={this.state.dataSource}
-      renderRow={(rowData) => <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>}
-      renderSeparator={this._renderSeparator}
-    />
-    <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Users})}>
-      <Text style={styles.buttonText}>Follow</Text>
+      <View style={{flexDirection: 'column', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
+    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
+    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
+    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
+    <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: Profile})}>
+      <Text style={styles.buttonText}>Edit Profile</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
+      <Text style={styles.buttonText}>Delete Account</Text>
     </TouchableOpacity>
       </View>
       </View>
@@ -123,14 +97,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 8
   },
-  button: {
+  button_edit: {
     position: 'absolute',
     bottom:0,
-    left:width/4,
+    left:0,
     height: 45,
     width: width/2,
     backgroundColor: '#324563',
     borderColor: '#5576aa',
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  button_delete: {
+    position: 'absolute',
+    bottom:0,
+    right:0,
+    height: 45,
+    width: width/2,
+    backgroundColor: '#cc0000',
+    borderColor: '#ff4d4d',
     borderWidth: 2,
     borderRadius: 30,
     alignSelf: 'stretch',
