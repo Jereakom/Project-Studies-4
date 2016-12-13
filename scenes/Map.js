@@ -18,7 +18,6 @@ import {
 import MapView from 'react-native-maps';
 import login from './login.js';
 import Friendlist from './Friendlist.js';
-import Profile from './Profile.js';
 import Button from 'react-native-button';
 import menu_icon from './src/menu_icon.png';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
@@ -141,7 +140,7 @@ export default class Map extends Component {
         latitude: this.state.markers[i]["coordinate"]["latitude"],
         longitude: this.state.markers[i]["coordinate"]["longitude"]
       };
-      if(haversine(start,end, {unit: 'meter'})<=10 && this.state.markers[i] != this.state.marker) {
+      if(haversine(start,end, {unit: 'meter'})<=50 && this.state.markers[i] != this.state.marker) {
         messages= [
           ...messages,
           {
@@ -285,21 +284,16 @@ export default class Map extends Component {
             source={require('./src/menu_icon.png')}
           />
           </MenuTrigger>
-          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 200, backgroundColor: 'white'}}>
+          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 150, backgroundColor: 'white'}}>
           <MenuOption value={1}>
             <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
           </MenuOption>
-          <MenuOption value={2}>
-          <TouchableOpacity onPress={() => this.setState({viewChange: Profile})}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Profile</Text>
-          </TouchableOpacity>
-          </MenuOption>
-            <MenuOption value={3}>
+            <MenuOption value={2}>
             <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Following</Text>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Friendlist</Text>
             </TouchableOpacity>
             </MenuOption>
-            <MenuOption value={4}>
+            <MenuOption value={3}>
             <TouchableOpacity onPress={() => this.logout()}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>LOGOUT</Text>
             </TouchableOpacity>

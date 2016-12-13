@@ -68,6 +68,19 @@ export default class Friendlist extends Component {
     );
   }
 
+  async removeFriend(friend) {
+    console.log(friend.rowData);
+    for (var i=0;i<Friends.length;i++) {
+      if (friend.rowData == Friends[i]) {
+        const id = await AsyncStorage.getItem('id_token');
+        let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends/" + friend.rowData;
+        console.log(url);
+        fetch(url, {method: "DELETE"})
+      }
+    }
+    this.setState({viewChange: Friendlist});
+  }
+
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
@@ -93,7 +106,13 @@ export default class Friendlist extends Component {
       <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
     <ListView
       dataSource={this.state.dataSource}
-      renderRow={(rowData) => <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>}
+      renderRow={(rowData) =>
+      <View>
+        <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
+        <TouchableOpacity style={styles.button2} onPress={() => this.removeFriend({rowData})}>
+          <Text style={styles.buttonText}>Remove</Text>
+        </TouchableOpacity>
+      </View>}
       renderSeparator={this._renderSeparator}
     />
     <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Users})}>
@@ -129,6 +148,19 @@ const styles = StyleSheet.create({
     left:width/4,
     height: 45,
     width: width/2,
+    backgroundColor: '#324563',
+    borderColor: '#5576aa',
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  button2: {
+    position: 'absolute',
+    bottom:0,
+    left:width-100,
+    height: 45,
+    width: width/4,
     backgroundColor: '#324563',
     borderColor: '#5576aa',
     borderWidth: 2,
