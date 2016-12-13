@@ -18,6 +18,7 @@ import {
 import MapView from 'react-native-maps';
 import Profile from './Profile.js';
 import login from './login.js';
+import Groups from './Groups.js';
 import Friendlist from './Friendlist.js';
 import Button from 'react-native-button';
 import menu_icon from './src/menu_icon.png';
@@ -285,7 +286,7 @@ export default class Map extends Component {
             source={require('./src/menu_icon.png')}
           />
           </MenuTrigger>
-          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 200, backgroundColor: 'white'}}>
+          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 250, backgroundColor: 'white'}}>
             <MenuOption value={1}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
             </MenuOption>
@@ -294,12 +295,17 @@ export default class Map extends Component {
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Profile</Text>
             </TouchableOpacity>
             </MenuOption>
-              <MenuOption value={3}>
+            <MenuOption value={3}>
             <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Following</Text>
             </TouchableOpacity>
             </MenuOption>
-            <MenuOption value={3}>
+            <MenuOption value={4}>
+            <TouchableOpacity onPress={() => this.setState({viewChange: Groups})}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Groups</Text>
+            </TouchableOpacity>
+            </MenuOption>
+            <MenuOption value={45}>
             <TouchableOpacity onPress={() => this.logout()}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>LOGOUT</Text>
             </TouchableOpacity>
@@ -331,7 +337,7 @@ export default class Map extends Component {
           ))}
         </MapView>
         <TouchableOpacity style={styles.button} onPress={() => this.friendsPosts()}>
-          <Text style={styles.buttonText}>Only show posts by friends</Text>
+          <Text style={styles.buttonText}>Only show posts by followed people</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
           <Text style={styles.buttonText}>Create a post at your location</Text>

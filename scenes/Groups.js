@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Map from './Map.js';
-import Users from './Users.js';
+import JoinGroups from './JoinGroups.js';
 import {
   AppRegistry,
   StyleSheet,
@@ -17,40 +17,40 @@ import {
   ListView
 } from 'react-native';
 const { width, height } = Dimensions.get('window');
-var Friends = [];
+var groups = [];
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
-export default class Friendlist extends Component {
+export default class Groups extends Component {
   constructor(props){
     super(props)
     this.state = {
-      friend: undefined,
+      group: undefined,
       viewChange: undefined,
     };
   }
   componentDidMount() {
-    Friends = [];
+    groups = [];
     BackAndroid.addEventListener('hardwareBackPress', () => {
       this.setState({viewChange: Map})
       return true;
     });
-    this.fetchFriends();
+    this.fetchGroups();
   }
 
   componentWillUnmount(){
     BackAndroid.removeEventListener('hardwareBackPress');
   }
   createList() {
-    this.setState({dataSource: ds.cloneWithRows(Friends)})
+    this.setState({dataSource: ds.cloneWithRows(groups)})
     this.setState({hasFetched: true});
   }
-  async fetchFriends(){
+  async fetchGroups(){
     const id = await AsyncStorage.getItem('id_token');
-    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends")
+    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups")
    .then((response) => response.json())
    .then((responseData) => {
       for(var i=0;i<responseData.length;i++) {
-        Friends.push(responseData[i].username);
+        groups.push(responseData[i].group);
       }
       this.createList();
     })
@@ -68,25 +68,23 @@ export default class Friendlist extends Component {
     );
   }
 
-  async removeFriend(friend) {
-     for (var i=0;i<Friends.length;i++) {
-       if (friend.rowData == Friends[i]) {
-         const id = await AsyncStorage.getItem('id_token');
-         let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends/" + friend.rowData;
-         fetch(url, {method: "DELETE"})
-       }
-     }
-     this.setState({viewChange: Friendlist});
-   }
-
+  async removeGroup(group) {
+    for (var i=0;i<groups.length;i++) {
+      if (group.rowData == groups[i]) {
+        let url = "http://thegrid.northeurope.cloudapp.azure.com/groups/" + group.rowData;
+        fetch(url, {method: "DELETE"})
+      }
+    }
+    this.setState({viewChange: Groups});
+  }
 
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
-      if (ViewChange == Users) {
+      if (ViewChange == JoinGroups) {
       return (
         <ViewChange>
-          {Friends}
+          {groups}
         </ViewChange>
       );
       }
@@ -100,7 +98,7 @@ export default class Friendlist extends Component {
     return (
       <View>
       <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Follows</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Groups</Text>
       </View>
       <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
     <ListView
@@ -108,15 +106,15 @@ export default class Friendlist extends Component {
       renderRow={(rowData) =>
         <View>
           <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
-          <TouchableOpacity style={styles.button2} onPress={() => this.removeFriend({rowData})}>
+          <TouchableOpacity style={styles.button2} onPress={() => this.removeGroup({rowData})}>
             <Text style={styles.buttonText}>Remove</Text>
           </TouchableOpacity>
         </View>
       }
       renderSeparator={this._renderSeparator}
     />
-    <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Users})}>
-      <Text style={styles.buttonText}>Follow</Text>
+    <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: JoinGroups})}>
+      <Text style={styles.buttonText}>Join a Group</Text>
     </TouchableOpacity>
       </View>
       </View>
