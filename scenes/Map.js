@@ -50,6 +50,12 @@ export default class Map extends Component {
       isLoggedIn: false,
       marker: undefined,
       messages: [],
+      showAllBGColor: '#324563',
+      showAllTextColor: 'white',
+      showFriendsBGColor: '#324563',
+      showFriendsTextColor: 'white',
+      showGroupsBGColor: '#324563',
+      showGroupsTextColor: 'white',
     };
   }
 
@@ -96,7 +102,7 @@ export default class Map extends Component {
         })
       }
     }
-    this.getPosts();
+    this.initPreference();
   }
 
   async getPosts() {
@@ -222,7 +228,59 @@ export default class Map extends Component {
      }
    }
   }
-
+  async checkPreference(){
+     var pref = await AsyncStorage.getItem('Preference');
+     if (pref == 'all') {
+       this.setState({showAllBGColor: 'white',
+       showAllTextColor: '#324563'});
+       this.setState({showFriendsBGColor: '#324563',
+       showFriendsTextColor: 'white'});
+       this.setState({showGroupsBGColor: '#324563',
+       showGroupsTextColor: 'white'});
+     }
+     else if (pref == 'friends') {
+       this.setState({showFriendsBGColor: 'white',
+       showFriendsTextColor: '#324563'});
+       this.setState({showAllBGColor: '#324563',
+       showAllTextColor: 'white'});
+       this.setState({showGroupsBGColor: '#324563',
+       showGroupsTextColor: 'white'});
+     }
+     else if (pref == 'groups') {
+       this.setState({showGroupsBGColor: 'white',
+       showGroupsTextColor: '#324563'});
+       this.setState({showFriendsBGColor: '#324563',
+       showFriendsTextColor: 'white'});
+       this.setState({showAllBGColor: '#324563',
+       showAllTextColor: 'white'});
+     }
+     else {
+       await AsyncStorage.setItem('Preference', 'all');
+       pref = 'all';
+       this.setState({showAllBGColor: 'white',
+       showAllTextColor: '#324563'});
+     }
+     return pref;
+  }
+  async initPreference(){
+    await this.sync(await this.checkPreference());
+  }
+  async changePreference(pref){
+    await AsyncStorage.setItem('Preference', pref);
+    await this.sync(await this.checkPreference());
+  }
+  async sync(pref){
+    console.log(pref);
+    if (pref == 'all') {
+      this.getPosts();
+    }
+    else if (pref == 'friends') {
+      this.friendsPosts();
+    }
+    else if (pref == 'groups') {
+      this.friendsPosts(); //TODO:Make it display all posts from all groups user belongs to ?
+    }
+  }
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
@@ -336,12 +394,20 @@ export default class Map extends Component {
             </MapView.Marker>
           ))}
         </MapView>
-        <TouchableOpacity style={styles.button} onPress={() => this.friendsPosts()}>
-          <Text style={styles.buttonText}>Only show posts by followed people</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
           <Text style={styles.buttonText}>Create a post at your location</Text>
         </TouchableOpacity>
+        <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
+          <TouchableOpacity style={{height: 45,width: (width)/3,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height: 45,width: (width)/3,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height: 45,width: (width)/3,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('groups')}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       </MenuContext>
     );
@@ -400,12 +466,55 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 60,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     borderColor: '#324563',
     borderWidth: 2,
     borderRadius: 8,
     alignSelf: 'stretch',
     justifyContent: 'center'
+  },
+  buttonShowAll: {
+    height: 45,
+    width: (width-60)/3,
+    backgroundColor: '#324563',
+    borderColor: '#324563',
+    borderWidth: 2,
+    borderRadius: 8,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonShowFriends: {
+    height: 45,
+    width: (width-60)/3,
+    backgroundColor: '#324563',
+    borderColor: '#324563',
+    borderWidth: 2,
+    borderRadius: 8,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonShowGroups: {
+    height: 45,
+    width: (width-60)/3,
+    backgroundColor: '#324563',
+    borderColor: '#324563',
+    borderWidth: 2,
+    borderRadius: 8,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonSync: {
+    height: 45,
+    width: 60,
+    backgroundColor: '#324563',
+    borderColor: '#324563',
+    borderWidth: 2,
+    borderRadius: 8,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
   },
   buttonText: {
     fontSize: 18,
