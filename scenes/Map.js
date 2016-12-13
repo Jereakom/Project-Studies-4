@@ -180,7 +180,6 @@ export default class Map extends Component {
   }
 
   async friendsPosts() {
-    this.setState({markers : []});
     const token = await AsyncStorage.getItem('id_token');
     const user = await AsyncStorage.getItem('username');
     fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/friends")
@@ -193,6 +192,7 @@ export default class Map extends Component {
    .done();
    let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts');
    let responseJson = await response.json();
+   this.setState({markers : []});
    for(var i=0;i<responseJson.length;i++) {
      for(var o=0;o<Friends.length;o++) {
        if(responseJson[i]["username"] == Friends[o]) {
