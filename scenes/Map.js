@@ -16,6 +16,7 @@ import {
   ToastAndroid
 } from 'react-native';
 import MapView from 'react-native-maps';
+import Profile from './Profile.js';
 import login from './login.js';
 import Friendlist from './Friendlist.js';
 import Button from 'react-native-button';
@@ -284,11 +285,16 @@ export default class Map extends Component {
             source={require('./src/menu_icon.png')}
           />
           </MenuTrigger>
-          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 150, backgroundColor: 'white'}}>
-          <MenuOption value={1}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
-          </MenuOption>
+          <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 200, backgroundColor: 'white'}}>
+            <MenuOption value={1}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
+            </MenuOption>
             <MenuOption value={2}>
+            <TouchableOpacity onPress={() => this.setState({viewChange: Profile})}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Profile</Text>
+            </TouchableOpacity>
+            </MenuOption>
+              <MenuOption value={3}>
             <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
               <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Friendlist</Text>
             </TouchableOpacity>
