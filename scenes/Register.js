@@ -112,6 +112,7 @@ console.log(formBody);
       .then((response) => response.json())
       .then((responseData) => {
         this._onValueChange(STORAGE_KEY, responseData.id);
+        this._onValueChange('email', responseData.email);
         this._onValueChange('username', responseData.username);
       })
       .done();

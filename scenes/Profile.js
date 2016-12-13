@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Map from './Map.js';
 import Users from './Users.js';
+import EditProfile from './EditProfile.js'
 import {
   AppRegistry,
   StyleSheet,
@@ -22,7 +23,7 @@ var email = undefined;
 var id = undefined;
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
-export default class Friendlist extends Component {
+export default class Profile extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -67,7 +68,7 @@ export default class Friendlist extends Component {
     <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
     <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
     <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
-    <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: Profile})}>
+    <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
       <Text style={styles.buttonText}>Edit Profile</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
