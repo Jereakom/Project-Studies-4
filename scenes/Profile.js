@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Map from './Map.js';
 import Users from './Users.js';
 import EditProfile from './EditProfile.js'
@@ -23,14 +23,20 @@ var email = undefined;
 var id = undefined;
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
+const propTypes = {
+  children: PropTypes.node.isRequired,
+}
+
 export default class Profile extends Component {
   constructor(props){
     super(props)
     this.state = {
       friend: undefined,
       viewChange: undefined,
+      hasFetched: false,
     };
   }
+
   componentDidMount() {
     Friends = [];
     BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -45,10 +51,40 @@ export default class Profile extends Component {
   }
 
   async fetchProfileData(){
-    username = await AsyncStorage.getItem('username');
-    email = await AsyncStorage.getItem('email');
-    id = await AsyncStorage.getItem('id_token');
-    this.setState({hasFetched: true});
+    if(!this.props.children) {
+      username = await AsyncStorage.getItem('username');
+      email = await AsyncStorage.getItem('email');
+      id = await AsyncStorage.getItem('id_token');
+      this.setState({hasFetched: true});
+    } else {
+      fetch("http://thegrid.northeurope.cloudapp.azure.com/users/")
+      .then((response) => response.json())
+      .then((responseData) => {
+        for(var i=0;i<responseData.length;i++) {
+          if(responseData[i].username == this.props.children) {
+            id = responseData[i].id.toString();
+            username = responseData[i].username;
+            this.setState({hasFetched: true});
+          }
+        }
+      })
+    }
+  }
+
+  _renderOwnProfile() {
+    if(!this.props.children) {
+      return (
+        <View style={{flexDirection: 'column', height: height/5.5*4.7-90, width:width, padding: 10, backgroundColor: 'white'}}>
+          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
+          <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
+            <Text style={styles.buttonText}>Edit Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
+            <Text style={styles.buttonText}>Delete Account</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
   }
 
   render() {
@@ -60,21 +96,15 @@ export default class Profile extends Component {
     }
     if (this.state.hasFetched == true) {
     return (
-      <View>
-      <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
+      <View style={{height: height, backgroundColor: 'white'}}>
+        <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
           <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Profile</Text>
-      </View>
-      <View style={{flexDirection: 'column', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
-    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
-    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
-    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
-    <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
-      <Text style={styles.buttonText}>Edit Profile</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
-      <Text style={styles.buttonText}>Delete Account</Text>
-    </TouchableOpacity>
-      </View>
+        </View>
+        <View style={{flexDirection: 'column', height: height/5.5, width:width, padding: 10, backgroundColor: 'white'}}>
+          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
+          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
+        </View>
+        {this._renderOwnProfile()}
       </View>
     );
     }
@@ -91,6 +121,8 @@ export default class Profile extends Component {
     }
   }
 }
+
+Profile.propTypes = propTypes;
 
 const styles = StyleSheet.create({
   loading: {

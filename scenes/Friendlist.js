@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Map from './Map.js';
 import Users from './Users.js';
+import Profile from './Profile.js';
 import {
   AppRegistry,
   StyleSheet,
@@ -70,13 +71,17 @@ export default class Friendlist extends Component {
 
   async removeFriend(friend) {
      for (var i=0;i<Friends.length;i++) {
-       if (friend.rowData == Friends[i]) {
+       if (friend == Friends[i]) {
          const id = await AsyncStorage.getItem('id_token');
-         let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends/" + friend.rowData;
+         let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends/" + friend;
          fetch(url, {method: "DELETE"})
        }
      }
      this.setState({viewChange: Friendlist});
+   }
+
+   friendProfile(friend) {
+     this.setState({profileFriend: friend, viewChange: Profile});
    }
 
 
@@ -84,16 +89,21 @@ export default class Friendlist extends Component {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       if (ViewChange == Users) {
-      return (
-        <ViewChange>
-          {Friends}
-        </ViewChange>
-      );
-      }
-      else {
-      return (
-        <ViewChange/>
-      );
+        return (
+          <ViewChange>
+            {Friends}
+          </ViewChange>
+        );
+      } else if(ViewChange == Profile) {
+        return (
+          <ViewChange>
+            {this.state.profileFriend}
+          </ViewChange>
+        );
+      } else {
+        return (
+          <ViewChange/>
+        );
       }
     }
     if (this.state.hasFetched == true) {
@@ -107,8 +117,10 @@ export default class Friendlist extends Component {
       dataSource={this.state.dataSource}
       renderRow={(rowData) =>
         <View>
-          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
-          <TouchableOpacity style={styles.button2} onPress={() => this.removeFriend({rowData})}>
+          <TouchableOpacity onPress={() => this.friendProfile(rowData)}>
+            <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button2} onPress={() => this.removeFriend(rowData)}>
             <Text style={styles.buttonText}>Remove</Text>
           </TouchableOpacity>
         </View>
