@@ -182,10 +182,11 @@ export default class Map extends Component {
     }
   }
 
-  async postsFilter(filter) {
+  async postsFilter() {
     const token = await AsyncStorage.getItem('id_token');
     const user = await AsyncStorage.getItem('username');
-    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/" + filter)
+    var url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/" + "friends";
+    fetch(url)
    .then((response) => response.json())
    .then((responseData) => {
       for(var i=0;i<responseData.length;i++) {
@@ -298,13 +299,13 @@ export default class Map extends Component {
       this.getPosts();
     }
     else if (pref == 'friends') {
-      this.postsFilter(pref);
+      this.postsFilter();
     }
     else if (pref == 'groups') {
-      this.postsFilter(pref); //TODO:Make it display tagged posts from all groups user belongs to ?
+      this.postsFilter(); //TODO:Make it display tagged posts from all groups user belongs to ?
     }
     else if (pref == 'tagged') {
-      this.postsFilter('friends'); //TODO:Make it display tagged posts from all posts where user is tagged ?
+      this.postsFilter(); //TODO:Make it display tagged posts from all posts where user is tagged ?
     }
   }
 
