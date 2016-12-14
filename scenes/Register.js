@@ -72,9 +72,7 @@ export default class Register extends Component {
 
   async _onValueChange(item, selectedValue) {
     try {
-      console.log("before AsyncStorage.setItem");
       await AsyncStorage.setItem(item, selectedValue.toString());
-      console.log("after AsyncStorage.setItem");
       if(AsyncStorage.getItem('username')) {
         this.setState({viewChange: Map});
       }
@@ -86,22 +84,20 @@ export default class Register extends Component {
   _userRegistration() {
     var value = this.refs['form'].getValue();
     var details = {
-    'username': value.username,
-    'password': value.password,
-    'email': value.email
-};
+      'username': value.username,
+      'password': value.password,
+      'email': value.email
+    };
 
-var formBody = [];
-for (var property in details) {
-  var encodedKey = encodeURIComponent(property);
-  var encodedValue = encodeURIComponent(details[property]);
-  formBody.push(encodedKey + "=" + encodedValue);
-}
-formBody = formBody.join("&");
-console.log(formBody);
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
     if (value) { // if validation fails, value will be null
-       console.log("before fetching");
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/users", {
+      fetch("http://thegrid.northeurope.cloudapp.azure.com/users", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -127,34 +123,34 @@ console.log(formBody);
       );
     }
     else {
-    return (
-      <View style={styles.container}>
+      return (
+        <View style={styles.container}>
         <View style={styles.row}>
-          <Image
-            style={{width:width, height:100, marginBottom: 30}}
-            source={require('./src/logo.png')}
-          />
+        <Image
+        style={{width:width, height:100, marginBottom: 30}}
+        source={require('./src/logo.png')}
+        />
         </View>
         <View style={styles.row}>
-          <Form
-            ref="form"
-            type={Person}
-            options={options}
-          />
-        </View>
-        <View style={styles.row}>
-
-          <TouchableOpacity style={styles.button} onPress={this._userRegistration.bind(this)} underlayColor='#ffffff'>
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
-
+        <Form
+        ref="form"
+        type={Person}
+        options={options}
+        />
         </View>
         <View style={styles.row}>
 
+        <TouchableOpacity style={styles.button} onPress={this._userRegistration.bind(this)} underlayColor='#ffffff'>
+        <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+
         </View>
-      </View>
-    );
-  }
+        <View style={styles.row}>
+
+        </View>
+        </View>
+      );
+    }
   }
 }
 

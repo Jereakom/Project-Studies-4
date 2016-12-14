@@ -49,8 +49,8 @@ export default class Users extends Component {
     var logged_user = await AsyncStorage.getItem('username');
     var id = await AsyncStorage.getItem('id_token');
     var details = {
-    'funame': logged_user,
-    'suname': friend
+      'funame': logged_user,
+      'suname': friend
     };
 
     var formBody = [];
@@ -61,32 +61,32 @@ export default class Users extends Component {
     }
     formBody = formBody.join("&");
     console.log(formBody);
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formBody
-      })
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({viewChange: Friendlist});
-      })
-      .done();
+    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({viewChange: Friendlist});
+    })
+    .done();
   }
   async fetchUsers(){
     const logged_user = await AsyncStorage.getItem('username');
     var already_friends = this.props.children;
     fetch("http://thegrid.northeurope.cloudapp.azure.com/users/")
-   .then((response) => response.json())
-   .then((responseData) => {
+    .then((response) => response.json())
+    .then((responseData) => {
       for(var i=0;i<responseData.length;i++) {
         var add_it = true;
         if (responseData[i].username != logged_user) {
           for(var j=0;j<already_friends.length;j++) {
             if (already_friends[j] == responseData[i].username) {
-                add_it = false;
+              add_it = false;
             }
           }
           if (add_it) {
@@ -97,16 +97,16 @@ export default class Users extends Component {
 
       this.createList();
     })
-   .done();
+    .done();
   }
   _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
       <View
-        key={`${sectionID}-${rowID}`}
-        style={{
-          height: adjacentRowHighlighted ? 4 : 3,
-          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
-        }}
+      key={`${sectionID}-${rowID}`}
+      style={{
+        height: adjacentRowHighlighted ? 4 : 3,
+        backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
+      }}
       />
     );
   }
@@ -119,32 +119,32 @@ export default class Users extends Component {
       );
     }
     if (this.state.hasFetched == true) {
-    return (
-      <View>
-      <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Follow</Text>
-      </View>
-      <View style={{flexDirection: 'row', height: height-45, width:width, padding: 10, backgroundColor: 'white'}}>
-    <ListView
-      dataSource={this.state.dataSource}
-      renderRow={(rowData) =>
-        <TouchableOpacity onPress={() => this.addFriend(rowData)}>
-        <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
-        </TouchableOpacity>
-      }
-      renderSeparator={this._renderSeparator}
-    />
-      </View>
-      </View>
-    );
+      return (
+        <View>
+        <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Follow</Text>
+        </View>
+        <View style={{flexDirection: 'row', height: height-45, width:width, padding: 10, backgroundColor: 'white'}}>
+        <ListView
+        dataSource={this.state.dataSource}
+        renderRow={(rowData) =>
+          <TouchableOpacity onPress={() => this.addFriend(rowData)}>
+          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
+          </TouchableOpacity>
+        }
+        renderSeparator={this._renderSeparator}
+        />
+        </View>
+        </View>
+      );
     }
     else {
       return (
         <View style={{height:height, width:width, backgroundColor: '#324563' }}>
         <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
         <ActivityIndicator
-          style={[styles.loading, {height: 40}]}
-          size="large"
+        style={[styles.loading, {height: 40}]}
+        size="large"
         />
         </View>
       )

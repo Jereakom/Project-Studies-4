@@ -51,27 +51,26 @@ export default class EditProfile extends Component {
 
   async changeProfile(){
     if (this.state.oldpassword != undefined && this.state.oldpassword.length > 0 ) {
-    var id = await AsyncStorage.getItem('id_token');
-    var username = await AsyncStorage.getItem('username');
-    var details = {
-    'username': username,
-    'newemail': this.state.email,
-    'newpassword': this.state.newpassword,
-    'password':this.state.oldpassword
-    };
+      var id = await AsyncStorage.getItem('id_token');
+      var username = await AsyncStorage.getItem('username');
+      var details = {
+        'username': username,
+        'newemail': this.state.email,
+        'newpassword': this.state.newpassword,
+        'password':this.state.oldpassword
+      };
 
-    var formBody = [];
-    var oldpassword = this.state.oldpassword;
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      if (encodedValue != 'undefined' && encodedValue.length > 0) {
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    }
-    formBody = formBody.join("&");
-    console.log(formBody);
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id , {
+      var formBody = [];
+      var oldpassword = this.state.oldpassword;
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        if (encodedValue != 'undefined' && encodedValue.length > 0) {
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+      }
+      formBody = formBody.join("&");
+      fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id , {
         method: "PUT",
         headers: {
           'Accept': 'application/json',
@@ -97,41 +96,41 @@ export default class EditProfile extends Component {
     return (
       <View>
       <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Profile</Text>
+      <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Profile</Text>
       </View>
       <View style={{flexDirection: 'column', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
       <Text style={{marginTop:10, marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Insert only what you want to change</Text>
       <View style={{flexDirection: 'row', width:width-20}}>
       <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>New Email : </Text>
       <TextInput
-              style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
-              onChangeText={(email) => this.setState({email})}
-              value={this.state.email}
-            />
+      style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
+      onChangeText={(email) => this.setState({email})}
+      value={this.state.email}
+      />
       </View>
       <View style={{flexDirection: 'row', width:width-20}}>
       <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>New password : </Text>
       <TextInput
-              style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
-              onChangeText={(newpassword) => this.setState({newpassword})}
-              value={this.state.newpassword}
-            />
+      style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
+      onChangeText={(newpassword) => this.setState({newpassword})}
+      value={this.state.newpassword}
+      />
       </View>
       <Text style={{marginTop:10, marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Insert your current password </Text>
       <View style={{flexDirection: 'row', width:width-20}}>
       <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Password : </Text>
       <TextInput
-              style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
-              onChangeText={(oldpassword) => this.setState({oldpassword})}
-              value={this.state.oldpassword}
-            />
+      style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
+      onChangeText={(oldpassword) => this.setState({oldpassword})}
+      value={this.state.oldpassword}
+      />
       </View>
-    <TouchableOpacity style={styles.button_edit} onPress={() => this.changeProfile()}>
+      <TouchableOpacity style={styles.button_edit} onPress={() => this.changeProfile()}>
       <Text style={styles.buttonText}>Confirm</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
       <Text style={styles.buttonText}>CANCEL</Text>
-    </TouchableOpacity>
+      </TouchableOpacity>
       </View>
       </View>
     );

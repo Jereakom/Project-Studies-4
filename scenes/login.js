@@ -55,9 +55,7 @@ export default class login extends Component {
 
   async _onValueChange(item, selectedValue) {
     try {
-      console.log("before AsyncStorage.setItem");
       await AsyncStorage.setItem(item, selectedValue.toString());
-      console.log("after AsyncStorage.setItem");
       if(AsyncStorage.getItem('username')) {
         this.setState({viewChange: Map});
       }
@@ -69,8 +67,8 @@ export default class login extends Component {
   _userLogin() {
     var value = this.refs['form'].getValue();
     var details = {
-    'username': value.username,
-    'password': value.password
+      'username': value.username,
+      'password': value.password
     };
 
     var formBody = [];
@@ -80,10 +78,8 @@ export default class login extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    console.log(formBody);
     if (value) { // if validation fails, value will be null
-       console.log("before fetching");
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/login", {
+      fetch("http://thegrid.northeurope.cloudapp.azure.com/login", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -109,37 +105,37 @@ export default class login extends Component {
       );
     }
     else {
-    return (
-      <View style={styles.container}>
+      return (
+        <View style={styles.container}>
         <View style={styles.row}>
-          <Image
-            style={{width:width-33, height:100, marginBottom: 30}}
-            source={require('./src/logo.png')}
-          />
+        <Image
+        style={{width:width-33, height:100, marginBottom: 30}}
+        source={require('./src/logo.png')}
+        />
         </View>
         <View style={styles.row}>
-          <Form
-            ref="form"
-            type={Person}
-            options={options}
-          />
-        </View>
-        <View style={styles.row}>
-
-          <TouchableOpacity style={styles.button} onPress={this._userLogin.bind(this)} underlayColor='#ffffff'>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Register})} underlayColor='#ffffff'>
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
-
+        <Form
+        ref="form"
+        type={Person}
+        options={options}
+        />
         </View>
         <View style={styles.row}>
 
+        <TouchableOpacity style={styles.button} onPress={this._userLogin.bind(this)} underlayColor='#ffffff'>
+        <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Register})} underlayColor='#ffffff'>
+        <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+
         </View>
-      </View>
-    );
-  }
+        <View style={styles.row}>
+
+        </View>
+        </View>
+      );
+    }
   }
 }
 
