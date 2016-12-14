@@ -108,6 +108,7 @@ export default class Map extends Component {
   async getPosts() {
     let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts');
     let responseJson = await response.json();
+    this.setState({markers: []});
     for(var i=0;i<responseJson.length;i++) {
       this.setState({
         markers: [
@@ -179,10 +180,10 @@ export default class Map extends Component {
     }
   }
 
-  async friendsPosts() {
+  async postsFilter(filter) {
     const token = await AsyncStorage.getItem('id_token');
     const user = await AsyncStorage.getItem('username');
-    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/friends")
+    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/" + filter)
    .then((response) => response.json())
    .then((responseData) => {
       for(var i=0;i<responseData.length;i++) {
@@ -228,6 +229,7 @@ export default class Map extends Component {
      }
    }
   }
+
   async checkPreference(){
      var pref = await AsyncStorage.getItem('Preference');
      if (pref == 'all') {
@@ -262,25 +264,29 @@ export default class Map extends Component {
      }
      return pref;
   }
+
   async initPreference(){
     await this.sync(await this.checkPreference());
   }
+
   async changePreference(pref){
     await AsyncStorage.setItem('Preference', pref);
     await this.sync(await this.checkPreference());
   }
+
   async sync(pref){
     console.log(pref);
     if (pref == 'all') {
       this.getPosts();
     }
     else if (pref == 'friends') {
-      this.friendsPosts();
+      this.postsFilter(pref);
     }
     else if (pref == 'groups') {
-      this.friendsPosts(); //TODO:Make it display all posts from all groups user belongs to ?
+      this.postsFilter(pref);
     }
   }
+
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
