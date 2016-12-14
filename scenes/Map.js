@@ -474,22 +474,22 @@ async logout() {
 
 async isLoggedIn() {
   try {
-const value = await AsyncStorage.getItem('id_token');
-user_id = value;
-const user = await AsyncStorage.getItem('username');
-username = user;
-console.log("id_token : " + value);
-if (value !== null){
-  this.setState({isLoggedIn: true})
-  console.log("is logged in");
-}
-else {
-  console.log("is NOT logged in");
-  this.setState({viewChange: login});
-}
-} catch (error) {
-// Error retrieving data
-}
+    const value = await AsyncStorage.getItem('id_token');
+    user_id = value;
+    const user = await AsyncStorage.getItem('username');
+    username = user;
+    console.log("id_token : " + value);
+    if (value !== null){
+      this.setState({isLoggedIn: true})
+      console.log("is logged in");
+    }
+    else {
+      console.log("is NOT logged in");
+      this.setState({viewChange: login});
+    }
+  } catch (error) {
+  // Error retrieving data
+  }
 }
 
 }

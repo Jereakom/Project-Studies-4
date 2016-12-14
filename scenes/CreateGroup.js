@@ -21,6 +21,7 @@ var groups = [];
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
 export default class CreateGroup extends Component {
+
   constructor(props){
     super(props)
     this.state = {
@@ -28,6 +29,7 @@ export default class CreateGroup extends Component {
       viewChange: undefined,
     };
   }
+
   componentDidMount() {
     groups = [];
     BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -53,8 +55,7 @@ export default class CreateGroup extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    console.log(formBody);
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups", {
+      fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups", {
         method: "POST",
         headers: {
           'Accept': 'application/json',

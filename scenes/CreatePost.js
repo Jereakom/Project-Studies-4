@@ -66,14 +66,8 @@ export default class CreatePost extends React.Component {
     let signature = CryptoJS.SHA1(hash_string).toString();
     let upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload';
     let file = {uri: uri, type: 'image/png', name: 'upload.png'};
-    var details = {
-      'file': file,
-      'timestamp': timestamp,
-      'api_key': api_key,
-      'signature': signature
-    };
     var formBody = new FormData();
-    formBody.append('file', {uri: uri, type: 'image/png', name: 'upload.png'});
+    formBody.append('file', file);
     formBody.append('timestamp', timestamp);
     formBody.append('api_key', api_key);
     formBody.append('signature', signature);
@@ -94,10 +88,16 @@ export default class CreatePost extends React.Component {
   }
 
   _renderMap() {
+    var pic;
+    if (resp) {
+      pic = resp.url;
+    } else {
+      pic = "";
+    }
     var details = {
     'username': this.state.markers[0].username,
     'caption': this.state.markers[0].description,
-    'picture': resp.url,
+    'picture': pic,
     'latitude': this.state.markers[0].coordinate["latitude"],
     'longitude': this.state.markers[0].coordinate["longitude"]
     };
@@ -122,6 +122,22 @@ export default class CreatePost extends React.Component {
 
   componentWillUnmount(){
     BackAndroid.removeEventListener('hardwareBackPress');
+  }
+
+  _renderSubmit(img) {
+    if (img == undefined) {
+      return (
+        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this._renderMap()}>
+          <Text>Post</Text>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
+          <Text>Post</Text>
+        </TouchableOpacity>
+      )
+    }
   }
 
   render() {
@@ -176,9 +192,7 @@ export default class CreatePost extends React.Component {
             placeholder="Type here to leave a message"
           />
         </View>
-        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
-          <Text>Post</Text>
-        </TouchableOpacity>
+        {this._renderSubmit(img)}
       </View>
     );
   }
