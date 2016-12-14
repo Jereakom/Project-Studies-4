@@ -13,7 +13,9 @@ import {
   Image,
   CameraRoll,
   ActivityIndicator,
-  ToastAndroid
+  ToastAndroid,
+  ListView,
+  ScrollView
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Profile from './Profile.js';
@@ -34,6 +36,7 @@ const propTypes = {
   style: PropTypes.object,
 };
 var Friends = [];
+var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
 export default class Map extends Component {
 
@@ -58,6 +61,8 @@ export default class Map extends Component {
       showGroupsTextColor: 'white',
       showTaggedBGColor: '#324563',
       showTaggedTextColor: 'white',
+      showList: false,
+      dataSource: undefined
     };
   }
 
@@ -198,14 +203,143 @@ export default class Map extends Component {
       ToastAndroid.show('You are too far away from the post', ToastAndroid.LONG);
     }
   }
+  async fetchGroupList(){
+    if (this.state.showList == false) {
+      const id = await AsyncStorage.getItem('id_token');
+      groupList = [];
+      let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/users/' + id + '/groups');
+      groupList = await response.json();
+      this.setState({dataSource: ds.cloneWithRows(groupList)});
+      this.setState({showList:true});
+    }
+    else {
+      this.setState({showList:false});
+    }
+  }
 
-  async postsFilter() {
+  async groupPosts(group) {
+    const user = await AsyncStorage.getItem('username');
+    let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts/tags/' + group);
+    let responseJson = await response.json();
+    this.setState({markers: []});
+    for(var i=0;i<responseJson.length;i++) {
+      if(responseJson[i]["username"] == user) {
+        this.setState({
+          markers: [
+            ...this.state.markers,
+            {
+              username: responseJson[i]["username"],
+              key:id++,
+              coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+              description:responseJson[i]["caption"],
+              pinColor:'#4286f4',
+              img:responseJson[i]["picture"],
+            },
+          ],
+        })
+      } else
+        {
+          this.setState({
+          markers: [
+            ...this.state.markers,
+            {
+              username: responseJson[i]["username"],
+              key:id++,
+              coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+              description:responseJson[i]["caption"],
+              pinColor:'#00ff00',
+              img:responseJson[i]["picture"],
+            },
+          ],
+        })
+      }
+    }
+    await AsyncStorage.setItem('Preference', 'group');
+    this.setState({showList:false});
+    this.setState({showGroupsBGColor: 'white',
+    showGroupsTextColor: '#324563'});
+    this.setState({showFriendsBGColor: '#324563',
+    showFriendsTextColor: 'white'});
+    this.setState({showAllBGColor: '#324563',
+    showAllTextColor: 'white'});
+    this.setState({showTaggedBGColor: '#324563',
+    showTaggedTextColor: 'white'});
+  }
+
+  showGroupList(){
+    if (this.state.showList == true){
+      return (
+        <View style={{height:height/3 , marginTop:height/2, marginLeft:width/2, backgroundColor:'white', borderWidth:2, borderColor:'#324563'}}>
+        <ScrollView showsVerticalScrollIndicator>
+        <Text style={{marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Select a Group</Text>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowData) =>
+            <View>
+              <TouchableOpacity onPress={() => this.groupPosts(rowData.group)}>
+                <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}> {rowData.group}</Text>
+              </TouchableOpacity>
+            </View>
+          }
+        />
+        </ScrollView>
+        </View>
+      )
+    } else {
+      return (
+        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
+          <Text style={styles.buttonText}>POST SOMETHING WHERE I AM</Text>
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  async taggedPosts(){
+    const user = await AsyncStorage.getItem('username');
+    let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts/users/' + user);
+    let responseJson = await response.json();
+    this.setState({markers: []});
+    for(var i=0;i<responseJson.length;i++) {
+      if(responseJson[i]["username"] == user) {
+        this.setState({
+          markers: [
+            ...this.state.markers,
+            {
+              username: responseJson[i]["username"],
+              key:id++,
+              coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+              description:responseJson[i]["caption"],
+              pinColor:'#4286f4',
+              img:responseJson[i]["picture"],
+            },
+          ],
+        })
+      } else
+        { this.setState({
+          markers: [
+            ...this.state.markers,
+            {
+              username: responseJson[i]["username"],
+              key:id++,
+              coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+              description:responseJson[i]["caption"],
+              pinColor:'#00ff00',
+              img:responseJson[i]["picture"],
+            },
+          ],
+        })
+      }
+    }
+  }
+
+  async friendsPosts() {
     const token = await AsyncStorage.getItem('id_token');
     const user = await AsyncStorage.getItem('username');
     var url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/" + "friends";
     fetch(url)
    .then((response) => response.json())
    .then((responseData) => {
+     Friends = [];
       for(var i=0;i<responseData.length;i++) {
         Friends.push(responseData[i].username);
       }
@@ -253,6 +387,7 @@ export default class Map extends Component {
   async checkPreference(){
      var pref = await AsyncStorage.getItem('Preference');
      if (pref == 'all') {
+       this.setState({showList:false});
        this.setState({showAllBGColor: 'white',
        showAllTextColor: '#324563'});
        this.setState({showFriendsBGColor: '#324563',
@@ -263,6 +398,7 @@ export default class Map extends Component {
        showTaggedTextColor: 'white'});
      }
      else if (pref == 'friends') {
+       this.setState({showList:false});
        this.setState({showFriendsBGColor: 'white',
        showFriendsTextColor: '#324563'});
        this.setState({showAllBGColor: '#324563',
@@ -272,17 +408,8 @@ export default class Map extends Component {
        this.setState({showTaggedBGColor: '#324563',
        showTaggedTextColor: 'white'});
      }
-     else if (pref == 'groups') {
-       this.setState({showGroupsBGColor: 'white',
-       showGroupsTextColor: '#324563'});
-       this.setState({showFriendsBGColor: '#324563',
-       showFriendsTextColor: 'white'});
-       this.setState({showAllBGColor: '#324563',
-       showAllTextColor: 'white'});
-       this.setState({showTaggedBGColor: '#324563',
-       showTaggedTextColor: 'white'});
-     }
      else if (pref == 'tagged') {
+       this.setState({showList:false});
        this.setState({showTaggedBGColor: 'white',
        showTaggedTextColor: '#324563'});
        this.setState({showFriendsBGColor: '#324563',
@@ -302,7 +429,12 @@ export default class Map extends Component {
   }
 
   async initPreference(){
-    await this.sync(await this.checkPreference());
+    var pref = await this.checkPreference();
+    if (pref == 'group') {
+      await AsyncStorage.setItem('Preference', 'all');
+      var pref = await this.checkPreference();
+    }
+    await this.sync(pref);
   }
 
   async changePreference(pref){
@@ -316,13 +448,10 @@ export default class Map extends Component {
       this.getPosts();
     }
     else if (pref == 'friends') {
-      this.postsFilter();
-    }
-    else if (pref == 'groups') {
-      this.postsFilter(); //TODO:Make it display tagged posts from all groups user belongs to ?
+      this.friendsPosts();
     }
     else if (pref == 'tagged') {
-      this.postsFilter(); //TODO:Make it display tagged posts from all posts where user is tagged ?
+      this.taggedPosts();
     }
   }
 
@@ -439,9 +568,7 @@ export default class Map extends Component {
             </MapView.Marker>
           ))}
         </MapView>
-        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
-          <Text style={styles.buttonText}>Create a post at your location</Text>
-        </TouchableOpacity>
+        {this.showGroupList()}
         <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
           <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
             <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
@@ -449,7 +576,7 @@ export default class Map extends Component {
           <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
             <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('groups')}>
+          <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.fetchGroupList()}>
             <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showTaggedBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('tagged')}>
