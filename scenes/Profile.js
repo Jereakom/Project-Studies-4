@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Map from './Map.js';
 import Users from './Users.js';
 import EditProfile from './EditProfile.js'
+import DeleteAccount from './DeleteAccount.js'
 import {
   AppRegistry,
   StyleSheet,
@@ -15,7 +16,8 @@ import {
   ActivityIndicator,
   BackAndroid,
   AsyncStorage,
-  ListView
+  ListView,
+  Alert
 } from 'react-native';
 const { width, height } = Dimensions.get('window');
 var username = undefined;
@@ -79,7 +81,7 @@ export default class Profile extends Component {
           <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
             <Text style={styles.buttonText}>Edit Profile</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
+          <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: DeleteAccount})}>
             <Text style={styles.buttonText}>Delete Account</Text>
           </TouchableOpacity>
         </View>
