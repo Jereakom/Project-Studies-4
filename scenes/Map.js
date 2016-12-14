@@ -56,6 +56,8 @@ export default class Map extends Component {
       showFriendsTextColor: 'white',
       showGroupsBGColor: '#324563',
       showGroupsTextColor: 'white',
+      showTaggedBGColor: '#324563',
+      showTaggedTextColor: 'white',
     };
   }
 
@@ -237,6 +239,8 @@ export default class Map extends Component {
        showFriendsTextColor: 'white'});
        this.setState({showGroupsBGColor: '#324563',
        showGroupsTextColor: 'white'});
+       this.setState({showTaggedBGColor: '#324563',
+       showTaggedTextColor: 'white'});
      }
      else if (pref == 'friends') {
        this.setState({showFriendsBGColor: 'white',
@@ -245,6 +249,8 @@ export default class Map extends Component {
        showAllTextColor: 'white'});
        this.setState({showGroupsBGColor: '#324563',
        showGroupsTextColor: 'white'});
+       this.setState({showTaggedBGColor: '#324563',
+       showTaggedTextColor: 'white'});
      }
      else if (pref == 'groups') {
        this.setState({showGroupsBGColor: 'white',
@@ -253,6 +259,18 @@ export default class Map extends Component {
        showFriendsTextColor: 'white'});
        this.setState({showAllBGColor: '#324563',
        showAllTextColor: 'white'});
+       this.setState({showTaggedBGColor: '#324563',
+       showTaggedTextColor: 'white'});
+     }
+     else if (pref == 'tagged') {
+       this.setState({showTaggedBGColor: 'white',
+       showTaggedTextColor: '#324563'});
+       this.setState({showFriendsBGColor: '#324563',
+       showFriendsTextColor: 'white'});
+       this.setState({showAllBGColor: '#324563',
+       showAllTextColor: 'white'});
+       this.setState({showGroupsBGColor: '#324563',
+       showGroupsTextColor: 'white'});
      }
      else {
        await AsyncStorage.setItem('Preference', 'all');
@@ -278,7 +296,10 @@ export default class Map extends Component {
       this.friendsPosts();
     }
     else if (pref == 'groups') {
-      this.friendsPosts(); //TODO:Make it display all posts from all groups user belongs to ?
+      this.friendsPosts(); //TODO:Make it display tagged posts from all groups user belongs to ?
+    }
+    else if (pref == 'tagged') {
+      this.friendsPosts(); //TODO:Make it display tagged posts from all posts where user is tagged ?
     }
   }
   render() {
@@ -398,14 +419,17 @@ export default class Map extends Component {
           <Text style={styles.buttonText}>Create a post at your location</Text>
         </TouchableOpacity>
         <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
-          <TouchableOpacity style={{height: 45,width: (width)/3,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
+          <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{height: 45,width: (width)/3,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
+          <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{height: 45,width: (width)/3,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('groups')}>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
+          <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('groups')}>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showTaggedBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('tagged')}>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showTaggedTextColor}}>TAGGED</Text>
           </TouchableOpacity>
         </View>
       </View>
