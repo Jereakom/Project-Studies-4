@@ -110,8 +110,24 @@ export default class Map extends Component {
   async getPosts() {
     let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts');
     let responseJson = await response.json();
+    const user = await AsyncStorage.getItem('username');
     this.setState({markers: []});
     for(var i=0;i<responseJson.length;i++) {
+      if(responseJson[i]["username"] == user) {
+        this.setState({
+          markers: [
+            ...this.state.markers,
+            {
+              username: responseJson[i]["username"],
+              key:id++,
+              coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
+              description:responseJson[i]["caption"],
+              pinColor:'#4286f4',
+              img:responseJson[i]["picture"],
+            },
+          ],
+        })
+      } else {
       this.setState({
         markers: [
           ...this.state.markers,
@@ -126,6 +142,7 @@ export default class Map extends Component {
         ],
       })
     }
+  }
   }
 
   componentWillUnmount() {
@@ -224,7 +241,7 @@ export default class Map extends Component {
              key:id++,
              coordinate: {latitude: parseFloat(responseJson[i]["latitude"]), longitude: parseFloat(responseJson[i]["longitude"])},
              description:responseJson[i]["caption"],
-             pinColor:'#00ff00',
+             pinColor:'#4286f4',
              img:responseJson[i]["picture"],
            },
          ],
