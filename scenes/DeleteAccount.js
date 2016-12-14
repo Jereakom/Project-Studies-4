@@ -42,32 +42,31 @@ export default class EditProfile extends Component {
 
   deleteButtonPress() {
     Alert.alert(
-  'Delete My Account ?',
-  'All your posts will also be deleted',
-  [
-    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-    {text: 'Delete', onPress: () => this.deleteAccount()},
-  ]
-)
+      'Delete My Account ?',
+      'All your posts will also be deleted',
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'Delete', onPress: () => this.deleteAccount()},
+      ]
+    )
   }
 
   async deleteAccount() {
     const id = await AsyncStorage.getItem('id_token');
     var pass = this.state.password.toString();
-    console.log(pass);
     fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id, {
-     method: "DELETE",
-     headers: {
-       'Accept': 'application/json',
-       'Content-Type': 'application/x-www-form-urlencoded',
-       'Authorization': pass
-     }
-   })
-   .then((response) => response.json())
-   .then((responseData) => {
-     this.setState({viewChange:Login})
-   })
-   .done();
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': pass
+      }
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({viewChange:Login})
+    })
+    .done();
   }
 
   render() {
@@ -83,17 +82,17 @@ export default class EditProfile extends Component {
       <View style={{flexDirection: 'row', width:width-20}}>
       <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Password : </Text>
       <TextInput
-              style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
-              onChangeText={(password) => this.setState({password})}
-              value={this.state.password}
-            />
+      style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
+      onChangeText={(password) => this.setState({password})}
+      value={this.state.password}
+      />
       </View>
-    <TouchableOpacity style={styles.button_edit} onPress={() => this.deleteButtonPress()}>
+      <TouchableOpacity style={styles.button_edit} onPress={() => this.deleteButtonPress()}>
       <Text style={styles.buttonText}>Confirm</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
       <Text style={styles.buttonText}>CANCEL</Text>
-    </TouchableOpacity>
+      </TouchableOpacity>
       </View>
     );
   }

@@ -46,7 +46,7 @@ export default class Message extends React.Component {
     }
     return (
       <ScrollView contentContainerStyle={[styles.cont, this.props.style]}>
-        {this.props.children}
+      {this.props.children}
       </ScrollView>
     );
   }

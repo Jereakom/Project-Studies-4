@@ -21,6 +21,7 @@ var groups = [];
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
 export default class CreateGroup extends Component {
+
   constructor(props){
     super(props)
     this.state = {
@@ -28,6 +29,7 @@ export default class CreateGroup extends Component {
       viewChange: undefined,
     };
   }
+
   componentDidMount() {
     groups = [];
     BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -43,7 +45,7 @@ export default class CreateGroup extends Component {
   async createGroup(){
     var id = await AsyncStorage.getItem('id_token');
     var details = {
-    'name': this.state.group
+      'name': this.state.group
     };
 
     var formBody = [];
@@ -53,20 +55,19 @@ export default class CreateGroup extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    console.log(formBody);
-       fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formBody
-      })
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({viewChange: Groups});
-      })
-      .done();
+    fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({viewChange: Groups});
+    })
+    .done();
   }
 
   render() {
@@ -78,15 +79,15 @@ export default class CreateGroup extends Component {
     }
     return (
       <View style={{backgroundColor: 'white'}}>
-        <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Create a Group</Text>
-        </View>
-        <TextInput style={{marginTop: 100, height: 50}} placeholder="Group name" onSubmitEditing={(event) => this.setState({group: event.nativeEvent.text})}/>
-        <View style={{flexDirection: 'row', height: height-200, width:width, padding: 10, backgroundColor: 'white'}}>
-          <TouchableOpacity style={styles.button} onPress={() => this.createGroup()}>
-            <Text style={styles.buttonText}>Create</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
+      <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Create a Group</Text>
+      </View>
+      <TextInput style={{marginTop: 100, height: 50}} placeholder="Group name" onSubmitEditing={(event) => this.setState({group: event.nativeEvent.text})}/>
+      <View style={{flexDirection: 'row', height: height-200, width:width, padding: 10, backgroundColor: 'white'}}>
+      <TouchableOpacity style={styles.button} onPress={() => this.createGroup()}>
+      <Text style={styles.buttonText}>Create</Text>
+      </TouchableOpacity>
+      </View>
       </View>
     );
   }

@@ -66,14 +66,8 @@ export default class CreatePost extends React.Component {
     let signature = CryptoJS.SHA1(hash_string).toString();
     let upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload';
     let file = {uri: uri, type: 'image/png', name: 'upload.png'};
-    var details = {
-      'file': file,
-      'timestamp': timestamp,
-      'api_key': api_key,
-      'signature': signature
-    };
     var formBody = new FormData();
-    formBody.append('file', {uri: uri, type: 'image/png', name: 'upload.png'});
+    formBody.append('file', file);
     formBody.append('timestamp', timestamp);
     formBody.append('api_key', api_key);
     formBody.append('signature', signature);
@@ -94,12 +88,18 @@ export default class CreatePost extends React.Component {
   }
 
   _renderMap() {
+    var pic;
+    if (resp) {
+      pic = resp.url;
+    } else {
+      pic = "";
+    }
     var details = {
-    'username': this.state.markers[0].username,
-    'caption': this.state.markers[0].description,
-    'picture': resp.url,
-    'latitude': this.state.markers[0].coordinate["latitude"],
-    'longitude': this.state.markers[0].coordinate["longitude"]
+      'username': this.state.markers[0].username,
+      'caption': this.state.markers[0].description,
+      'picture': pic,
+      'latitude': this.state.markers[0].coordinate["latitude"],
+      'longitude': this.state.markers[0].coordinate["longitude"]
     };
 
     var formBody = [];
@@ -110,18 +110,34 @@ export default class CreatePost extends React.Component {
     }
     formBody = formBody.join("&");
     fetch("http://thegrid.northeurope.cloudapp.azure.com/posts", {
-       method: "POST",
-       headers: {
-         'Accept': 'application/json',
-         'Content-Type': 'application/x-www-form-urlencoded'
-       },
-       body: formBody
-     })
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody
+    })
     this.setState({viewChange: Map});
   }
 
   componentWillUnmount(){
     BackAndroid.removeEventListener('hardwareBackPress');
+  }
+
+  _renderSubmit(img) {
+    if (img == undefined) {
+      return (
+        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this._renderMap()}>
+        <Text>Post</Text>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
+        <Text>Post</Text>
+        </TouchableOpacity>
+      )
+    }
   }
 
   render() {
@@ -137,7 +153,7 @@ export default class CreatePost extends React.Component {
       } else if(ViewChange == Camera) {
         return (
           <ViewChange>
-            {{username: this.props.children["username"]}}
+          {{username: this.props.children["username"]}}
           </ViewChange>
         )
       }
@@ -150,35 +166,33 @@ export default class CreatePost extends React.Component {
     }
     return (
       <View style={styles.container}>
-        <View style={styles.cameraText}>
-          <Icon
-            style={{marginTop: 40}}
-            name="camera"
-            size={45}
-            color="#000"
-            onPress={() => this.setState({viewChange: Camera})} />
-          <TextInput
-            onSubmitEditing={(event) =>
-              this.setState({
-                markers: [
-                  {
-                    username:this.props.children["username"],
-                    key:id++,
-                    coordinate: {latitude:this.lat, longitude:this.lon},
-                    description:event.nativeEvent.text,
-                    pinColor:'#00ff00',
-                    img:img,
-                  },
-                ],
-              })
-            }
-            style={{height: 80, width: width-60, marginLeft: 10}}
-            placeholder="Type here to leave a message"
-          />
-        </View>
-        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
-          <Text>Post</Text>
-        </TouchableOpacity>
+      <View style={styles.cameraText}>
+      <Icon
+      style={{marginTop: 40}}
+      name="camera"
+      size={45}
+      color="#000"
+      onPress={() => this.setState({viewChange: Camera})} />
+      <TextInput
+      onSubmitEditing={(event) =>
+        this.setState({
+          markers: [
+            {
+              username:this.props.children["username"],
+              key:id++,
+              coordinate: {latitude:this.lat, longitude:this.lon},
+              description:event.nativeEvent.text,
+              pinColor:'#00ff00',
+              img:img,
+            },
+          ],
+        })
+      }
+      style={{height: 80, width: width-60, marginLeft: 10}}
+      placeholder="Type here to leave a message"
+      />
+      </View>
+      {this._renderSubmit(img)}
       </View>
     );
   }

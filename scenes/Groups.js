@@ -41,30 +41,33 @@ export default class Groups extends Component {
   componentWillUnmount(){
     BackAndroid.removeEventListener('hardwareBackPress');
   }
+
   createList() {
     this.setState({dataSource: ds.cloneWithRows(groups)})
     this.setState({hasFetched: true});
   }
+
   async fetchGroups(){
     const id = await AsyncStorage.getItem('id_token');
     fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups")
-   .then((response) => response.json())
-   .then((responseData) => {
+    .then((response) => response.json())
+    .then((responseData) => {
       for(var i=0;i<responseData.length;i++) {
         groups.push(responseData[i].group);
       }
       this.createList();
     })
-   .done();
+    .done();
   }
+
   _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
       <View
-        key={`${sectionID}-${rowID}`}
-        style={{
-          height: adjacentRowHighlighted ? 4 : 3,
-          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
-        }}
+      key={`${sectionID}-${rowID}`}
+      style={{
+        height: adjacentRowHighlighted ? 4 : 3,
+        backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
+      }}
       />
     );
   }
@@ -83,54 +86,54 @@ export default class Groups extends Component {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       if (ViewChange == JoinGroups) {
-      return (
-        <ViewChange>
+        return (
+          <ViewChange>
           {groups}
-        </ViewChange>
-      );
+          </ViewChange>
+        );
       }
       else {
-      return (
-        <ViewChange/>
-      );
+        return (
+          <ViewChange/>
+        );
       }
     }
     if (this.state.hasFetched == true) {
-    return (
-      <View>
-      <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Groups</Text>
-      </View>
-      <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
-    <ListView
-      dataSource={this.state.dataSource}
-      renderRow={(rowData) =>
+      return (
         <View>
+        <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Groups</Text>
+        </View>
+        <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
+        <ListView
+        dataSource={this.state.dataSource}
+        renderRow={(rowData) =>
+          <View>
           <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
           <TouchableOpacity style={styles.button2} onPress={() => this.removeGroup({rowData})}>
-            <Text style={styles.buttonText}>Remove</Text>
+          <Text style={styles.buttonText}>Remove</Text>
           </TouchableOpacity>
+          </View>
+        }
+        renderSeparator={this._renderSeparator}
+        />
+        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: JoinGroups})}>
+        <Text style={styles.buttonText}>Join a Group</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button3} onPress={() => this.setState({viewChange: CreateGroup})}>
+        <Text style={styles.buttonText}>Create a Group</Text>
+        </TouchableOpacity>
         </View>
-      }
-      renderSeparator={this._renderSeparator}
-    />
-    <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: JoinGroups})}>
-      <Text style={styles.buttonText}>Join a Group</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.button3} onPress={() => this.setState({viewChange: CreateGroup})}>
-      <Text style={styles.buttonText}>Create a Group</Text>
-    </TouchableOpacity>
-      </View>
-      </View>
-    );
+        </View>
+      );
     }
     else {
       return (
         <View style={{height:height, width:width, backgroundColor: '#324563' }}>
         <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
         <ActivityIndicator
-          style={[styles.loading, {height: 40}]}
-          size="large"
+        style={[styles.loading, {height: 40}]}
+        size="large"
         />
         </View>
       )
