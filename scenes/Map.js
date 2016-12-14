@@ -334,7 +334,7 @@ export default class Map extends Component {
           return (
             <ViewChange>
             {messages.map(function(message){
-              return <View key={id++} style={styles.bubble}><Text key={id++} style={{color:"black", fontSize:20}}>{message.username}</Text><Image style={{height: 400, width:width}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
+              return <View key={id++} style={styles.bubble}><Text key={id++} style={{color:"black", fontSize:20}}>{message.username}</Text><Image resizeMethod={'resize'} style={{width: width, height: 400}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
             })}
             </ViewChange>
           )
