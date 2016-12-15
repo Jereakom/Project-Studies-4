@@ -15,7 +15,8 @@ import {
   ActivityIndicator,
   BackAndroid,
   AsyncStorage,
-  ListView
+  ListView,
+  ToastAndroid
 } from 'react-native';
 const { width, height } = Dimensions.get('window');
 var username = undefined;
@@ -80,7 +81,11 @@ export default class EditProfile extends Component {
       })
       .then((response) => response.json())
       .then((responseData) => {
-        this.saveNewProfile(responseData);
+        if(!responseData.response) {
+          this.saveNewProfile(responseData);
+        } else {
+          ToastAndroid.show(responseData.response, ToastAndroid.LONG);
+        }
       })
       .done();
     }

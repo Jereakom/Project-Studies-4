@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  Dimensions
+  Dimensions,
+  ToastAndroid
 } from 'react-native';
 import logo from './src/logo.png';
 import Register from './Register.js';
@@ -89,9 +90,13 @@ export default class login extends Component {
       })
       .then((response) => response.json())
       .then((responseData) => {
-        this._onValueChange(STORAGE_KEY, responseData.id);
-        this._onValueChange('email', responseData.email);
-        this._onValueChange('username', responseData.username);
+        if(!responseData.response) {
+          this._onValueChange(STORAGE_KEY, responseData.id);
+          this._onValueChange('email', responseData.email);
+          this._onValueChange('username', responseData.username);
+        } else {
+          ToastAndroid.show('Invalid username or password', ToastAndroid.LONG);
+        }
       })
       .done();
     }
