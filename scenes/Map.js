@@ -286,7 +286,7 @@ export default class Map extends Component {
     } else {
       return (
         <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
-          <Text style={styles.buttonText}>POST SOMETHING WHERE I AM</Text>
+          <Text style={styles.buttonText}>MAKE A POST HERE</Text>
         </TouchableOpacity>
       )
     }
@@ -558,16 +558,16 @@ render() {
             {this.showGroupList()}
             <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
               <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
-                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
+                <Text style={{fontSize: 14, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
-                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
+                <Text style={{fontSize: 14, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.fetchGroupList()}>
-                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
+                <Text style={{fontSize: 14, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showTaggedBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('tagged')}>
-                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showTaggedTextColor}}>TAGGED</Text>
+                <Text style={{fontSize: 14, fontWeight: 'bold', color: this.state.showTaggedTextColor}}>TAGGED</Text>
               </TouchableOpacity>
             </View>
           </View>
