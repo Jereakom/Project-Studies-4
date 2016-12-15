@@ -8,7 +8,8 @@ import {
   Dimensions,
   BackAndroid,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 let id = 0;
 const { width, height } = Dimensions.get('window');
@@ -131,15 +132,21 @@ export default class CreatePost extends React.Component {
   _renderSubmit(img) {
     if (img == undefined) {
       return (
-        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this._renderMap()}>
-          <Text>Post</Text>
+        <TouchableOpacity style={styles.button} onPress={() => this._renderMap()}>
+          <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
       )
     } else {
       return (
-        <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
-          <Text>Post</Text>
+        <View>
+        <Image
+          style={{width:width, height:400}}
+          source={{uri: this.props.children["image"]}}
+        />
+        <TouchableOpacity style={styles.button} onPress={() => this.uploadImage(this.state.markers[0].img)}>
+          <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
+        </View>
       )
     }
   }
@@ -178,6 +185,7 @@ export default class CreatePost extends React.Component {
             color="#000"
             onPress={() => this.setState({viewChange: Camera})} />
           <TextInput
+            style = {{flex:1,height: 40, borderColor: '#324563', borderWidth: 2, marginTop: 40}}
             onChangeText={(text) =>
               this.setState({
                 markers: [
@@ -192,7 +200,6 @@ export default class CreatePost extends React.Component {
                 ],
               })
             }
-            style={{height: 80, width: width-60, marginLeft: 10}}
             placeholder="Type here to leave a message"
             />
         </View>
@@ -214,5 +221,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignSelf: 'flex-start',
     alignItems: 'center',
+  },
+  button: {
+    height: 36,
+    backgroundColor: '#324563',
+    borderColor: '#324563',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 10,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    fontSize: 18,
+    color: 'white',
+    alignSelf: 'center'
   },
 });
