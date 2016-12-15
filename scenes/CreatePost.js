@@ -174,14 +174,14 @@ export default class CreatePost extends React.Component {
       color="#000"
       onPress={() => this.setState({viewChange: Camera})} />
       <TextInput
-      onSubmitEditing={(event) =>
+      onChangeText={(text) =>
         this.setState({
           markers: [
             {
               username:this.props.children["username"],
               key:id++,
               coordinate: {latitude:this.lat, longitude:this.lon},
-              description:event.nativeEvent.text,
+              description:text,
               pinColor:'#00ff00',
               img:img,
             },

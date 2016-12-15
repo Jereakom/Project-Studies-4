@@ -74,7 +74,7 @@ export default class Friendlist extends Component {
       if (friend == Friends[i]) {
         const id = await AsyncStorage.getItem('id_token');
         let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends/" + friend;
-        fetch(url, {method: "DELETE"})
+        await fetch(url, {method: "DELETE"})
       }
     }
     this.setState({viewChange: Friendlist});
