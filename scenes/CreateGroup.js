@@ -82,7 +82,7 @@ export default class CreateGroup extends Component {
       <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
       <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Create a Group</Text>
       </View>
-      <TextInput style={{marginTop: 100, height: 50}} placeholder="Group name" onSubmitEditing={(event) => this.setState({group: event.nativeEvent.text})}/>
+      <TextInput style={{marginTop: 100, height: 50}} placeholder="Group name" onChangeText={(text) => this.setState({group: text})}/>
       <View style={{flexDirection: 'row', height: height-200, width:width, padding: 10, backgroundColor: 'white'}}>
       <TouchableOpacity style={styles.button} onPress={() => this.createGroup()}>
       <Text style={styles.buttonText}>Create</Text>

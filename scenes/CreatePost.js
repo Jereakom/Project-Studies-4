@@ -90,7 +90,11 @@ export default class CreatePost extends React.Component {
   _renderMap() {
     var pic;
     if (resp) {
-      pic = resp.url;
+      if (resp.url != undefined) {
+        pic = resp.url;
+      } else {
+        pic = "";
+      }
     } else {
       pic = "";
     }
