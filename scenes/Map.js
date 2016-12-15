@@ -258,39 +258,35 @@ export default class Map extends Component {
     await AsyncStorage.setItem('Preference', 'group');
     await AsyncStorage.setItem('GroupChoice', group);
     this.setState({showList:false});
-    this.setState({showGroupsBGColor: 'white',
-    showGroupsTextColor: '#324563'});
-    this.setState({showFriendsBGColor: '#324563',
-    showFriendsTextColor: 'white'});
-    this.setState({showAllBGColor: '#324563',
-    showAllTextColor: 'white'});
-    this.setState({showTaggedBGColor: '#324563',
-    showTaggedTextColor: 'white'});
+    this.setState({showGroupsBGColor: 'white', showGroupsTextColor: '#324563'});
+    this.setState({showFriendsBGColor: '#324563', showFriendsTextColor: 'white'});
+    this.setState({showAllBGColor: '#324563', showAllTextColor: 'white'});
+    this.setState({showTaggedBGColor: '#324563', showTaggedTextColor: 'white'});
   }
 
   showGroupList(){
     if (this.state.showList == true){
       return (
         <View style={{height:height/3 , marginTop:height/2, marginLeft:width/2, backgroundColor:'white', borderWidth:2, borderColor:'#324563'}}>
-        <ScrollView showsVerticalScrollIndicator>
-        <Text style={{marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Select a Group</Text>
-        <ListView
-        dataSource={this.state.dataSource}
-        renderRow={(rowData) =>
-          <View>
-          <TouchableOpacity onPress={() => this.groupPosts(rowData.group)}>
-          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}> {rowData.group}</Text>
-          </TouchableOpacity>
-          </View>
-        }
-        />
-        </ScrollView>
+          <ScrollView showsVerticalScrollIndicator>
+            <Text style={{marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Select a Group</Text>
+            <ListView
+              dataSource={this.state.dataSource}
+              renderRow={(rowData) =>
+                <View>
+                  <TouchableOpacity onPress={() => this.groupPosts(rowData.group)}>
+                    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}> {rowData.group}</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+              />
+          </ScrollView>
         </View>
       )
     } else {
       return (
         <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: CreatePost})}>
-        <Text style={styles.buttonText}>POST SOMETHING WHERE I AM</Text>
+          <Text style={styles.buttonText}>POST SOMETHING WHERE I AM</Text>
         </TouchableOpacity>
       )
     }
@@ -392,36 +388,24 @@ async checkPreference(){
   var pref = await AsyncStorage.getItem('Preference');
   if (pref == 'all') {
     this.setState({showList:false});
-    this.setState({showAllBGColor: 'white',
-    showAllTextColor: '#324563'});
-    this.setState({showFriendsBGColor: '#324563',
-    showFriendsTextColor: 'white'});
-    this.setState({showGroupsBGColor: '#324563',
-    showGroupsTextColor: 'white'});
-    this.setState({showTaggedBGColor: '#324563',
-    showTaggedTextColor: 'white'});
+    this.setState({showAllBGColor: 'white', showAllTextColor: '#324563'});
+    this.setState({showFriendsBGColor: '#324563', showFriendsTextColor: 'white'});
+    this.setState({showGroupsBGColor: '#324563', showGroupsTextColor: 'white'});
+    this.setState({showTaggedBGColor: '#324563', showTaggedTextColor: 'white'});
   }
   else if (pref == 'friends') {
     this.setState({showList:false});
-    this.setState({showFriendsBGColor: 'white',
-    showFriendsTextColor: '#324563'});
-    this.setState({showAllBGColor: '#324563',
-    showAllTextColor: 'white'});
-    this.setState({showGroupsBGColor: '#324563',
-    showGroupsTextColor: 'white'});
-    this.setState({showTaggedBGColor: '#324563',
-    showTaggedTextColor: 'white'});
+    this.setState({showFriendsBGColor: 'white', showFriendsTextColor: '#324563'});
+    this.setState({showAllBGColor: '#324563', showAllTextColor: 'white'});
+    this.setState({showGroupsBGColor: '#324563', showGroupsTextColor: 'white'});
+    this.setState({showTaggedBGColor: '#324563', showTaggedTextColor: 'white'});
   }
   else if (pref == 'tagged') {
     this.setState({showList:false});
-    this.setState({showTaggedBGColor: 'white',
-    showTaggedTextColor: '#324563'});
-    this.setState({showFriendsBGColor: '#324563',
-    showFriendsTextColor: 'white'});
-    this.setState({showAllBGColor: '#324563',
-    showAllTextColor: 'white'});
-    this.setState({showGroupsBGColor: '#324563',
-    showGroupsTextColor: 'white'});
+    this.setState({showTaggedBGColor: 'white', showTaggedTextColor: '#324563'});
+    this.setState({showFriendsBGColor: '#324563', showFriendsTextColor: 'white'});
+    this.setState({showAllBGColor: '#324563', showAllTextColor: 'white'});
+    this.setState({showGroupsBGColor: '#324563', showGroupsTextColor: 'white'});
   }
   return pref;
 }
@@ -466,158 +450,158 @@ render() {
       if (messages.length > 0){
         return (
           <ViewChange>
-          {messages.map(function(message){
-            return <View key={id++} style={styles.bubble}><Text key={id++} style={{color:"black", fontSize:20}}>{message.username}</Text><Image resizeMethod={'resize'} style={{width: width, height: 400}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
-          })}
+            {messages.map(function(message){
+              return <View key={id++} style={styles.bubble}><Text key={id++} style={{color:"black", fontSize:20}}>{message.username}</Text><Image resizeMethod={'resize'} style={{width: width, height: 400}} source={{uri: message.image}}></Image><Text key={id++} style={{color:"white", fontSize:20}}>{message.caption}</Text></View>;
+              })}
+            </ViewChange>
+          )
+        }
+      } else if (ViewChange == CreatePost) {
+        return (
+          <ViewChange>
+            {{username: username}}
           </ViewChange>
+        );
+      } else {
+        return (
+          <ViewChange />
         )
       }
-    } else if (ViewChange == CreatePost) {
+    }
+    if (this.state.isLoggedIn == false) {
       return (
-        <ViewChange>
-        {{username: username}}
-        </ViewChange>
-      );
-    } else {
-      return (
-        <ViewChange />
+        <View style={{height:height, width:width, backgroundColor: '#324563' }}>
+          <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
+          <ActivityIndicator
+            style={[styles.loading, {height: 40}]}
+            size="large"
+            />
+        </View>
       )
     }
-  }
-  if (this.state.isLoggedIn == false) {
-    return (
-      <View style={{height:height, width:width, backgroundColor: '#324563' }}>
-      <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
-      <ActivityIndicator
-      style={[styles.loading, {height: 40}]}
-      size="large"
-      />
-      </View>
-    )
-  }
-  else {
-
-    if(this.state.latitude && this.state.longitude) {
-      this.lat = this.state.latitude;
-      this.lon = this.state.longitude;
-    } else {
-      this.lat = 0.0;
-      this.lon = 0.0;
-    }
-
-    return (
-      <MenuContext style={{ flex: 1 }}>
-      <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
-      <View style={{ flex: 1}}>
-      <Image
-      style={{flex:1, height:40, width:150, marginHorizontal:5}}
-      source={require('./src/logo.png')}
-      />
-      </View>
-      <Menu>
-      <MenuTrigger>
-      <Image
-      style={{height:45, width:45}}
-      source={require('./src/menu_icon.png')}
-      />
-      </MenuTrigger>
-      <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 250, backgroundColor: 'white'}}>
-      <MenuOption value={1}>
-      <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563', textAlign: 'center'}}>{username}</Text>
-      </MenuOption>
-      <MenuOption value={2}>
-      <TouchableOpacity onPress={() => this.setState({viewChange: Profile})}>
-      <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Profile</Text>
-      </TouchableOpacity>
-      </MenuOption>
-      <MenuOption value={3}>
-      <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
-      <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Following</Text>
-      </TouchableOpacity>
-      </MenuOption>
-      <MenuOption value={4}>
-      <TouchableOpacity onPress={() => this.setState({viewChange: Groups})}>
-      <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Groups</Text>
-      </TouchableOpacity>
-      </MenuOption>
-      <MenuOption value={45}>
-      <TouchableOpacity onPress={() => this.logout()}>
-      <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>LOGOUT</Text>
-      </TouchableOpacity>
-      </MenuOption>
-      </MenuOptions>
-      </Menu>
-      </View>
-      <View style={styles.container}>
-      <MapView
-      showsUserLocation={true}
-      style={styles.map}
-      toolbarEnabled={false}
-      moveOnMarkerPress={false}
-      region={{
-        latitude: this.lat,
-        longitude: this.lon,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }}>
-      {this.state.markers.map(marker => (
-        <MapView.Marker
-        ref={ref => { marker.ref = ref; }}
-        style={{height : 50, width : 50}}
-        key={marker.key}
-        coordinate={marker.coordinate}
-        pinColor={marker.pinColor}
-        onPress={() => this.showMessages(marker)}>
-        </MapView.Marker>
-      ))}
-      </MapView>
-      {this.showGroupList()}
-      <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
-      <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
-      <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
-      <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.fetchGroupList()}>
-      <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showTaggedBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('tagged')}>
-      <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showTaggedTextColor}}>TAGGED</Text>
-      </TouchableOpacity>
-      </View>
-      </View>
-      </MenuContext>
-    );
-  }
-}
-
-
-async logout() {
-  try {
-    await AsyncStorage.removeItem('id_token');
-    this.setState({viewChange: login});
-  } catch (error) {
-    console.log('AsyncStorage error: ' + error.message);
-  }
-}
-
-async isLoggedIn() {
-  try {
-    const value = await AsyncStorage.getItem('id_token');
-    user_id = value;
-    const user = await AsyncStorage.getItem('username');
-    username = user;
-    if (value !== null){
-      this.setState({isLoggedIn: true})
-    }
     else {
-      this.setState({viewChange: login});
+
+      if(this.state.latitude && this.state.longitude) {
+        this.lat = this.state.latitude;
+        this.lon = this.state.longitude;
+      } else {
+        this.lat = 0.0;
+        this.lon = 0.0;
+      }
+
+      return (
+        <MenuContext style={{ flex: 1 }}>
+          <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
+            <View style={{ flex: 1}}>
+              <Image
+                style={{flex:1, height:40, width:150, marginHorizontal:5}}
+                source={require('./src/logo.png')}
+                />
+            </View>
+            <Menu>
+              <MenuTrigger>
+                <Image
+                  style={{height:45, width:45}}
+                  source={require('./src/menu_icon.png')}
+                  />
+              </MenuTrigger>
+              <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 250, backgroundColor: 'white'}}>
+                <MenuOption value={1}>
+                  <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563', textAlign: 'center'}}>{username}</Text>
+                </MenuOption>
+                <MenuOption value={2}>
+                  <TouchableOpacity onPress={() => this.setState({viewChange: Profile})}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Profile</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+                <MenuOption value={3}>
+                  <TouchableOpacity onPress={() => this.setState({viewChange: Friendlist})}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Following</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+                <MenuOption value={4}>
+                  <TouchableOpacity onPress={() => this.setState({viewChange: Groups})}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Groups</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+                <MenuOption value={45}>
+                  <TouchableOpacity onPress={() => this.logout()}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>LOGOUT</Text>
+                  </TouchableOpacity>
+                </MenuOption>
+              </MenuOptions>
+            </Menu>
+          </View>
+          <View style={styles.container}>
+            <MapView
+              showsUserLocation={true}
+              style={styles.map}
+              toolbarEnabled={false}
+              moveOnMarkerPress={false}
+              region={{
+                latitude: this.lat,
+                longitude: this.lon,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}>
+              {this.state.markers.map(marker => (
+                <MapView.Marker
+                  ref={ref => { marker.ref = ref; }}
+                  style={{height : 50, width : 50}}
+                  key={marker.key}
+                  coordinate={marker.coordinate}
+                  pinColor={marker.pinColor}
+                  onPress={() => this.showMessages(marker)}>
+                </MapView.Marker>
+              ))}
+            </MapView>
+            {this.showGroupList()}
+            <View style={{height:45, flexDirection: 'row', backgroundColor: '#324563' }}>
+              <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showAllBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('all')}>
+                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showAllTextColor}}>ALL</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showFriendsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('friends')}>
+                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showFriendsTextColor}}>FOLLOWED</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showGroupsBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.fetchGroupList()}>
+                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showGroupsTextColor}}>GROUPS</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{height: 45,width: (width)/4,backgroundColor: this.state.showTaggedBGColor,borderColor: '#324563',borderWidth: 2,borderRadius: 8,alignSelf: 'stretch',justifyContent: 'center',alignItems: 'center'}} onPress={() => this.changePreference('tagged')}>
+                <Text style={{fontSize: 15, fontWeight: 'bold', color: this.state.showTaggedTextColor}}>TAGGED</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </MenuContext>
+      );
     }
-  } catch (error) {
-    // Error retrieving data
   }
-}
+
+
+  async logout() {
+    try {
+      await AsyncStorage.removeItem('id_token');
+      this.setState({viewChange: login});
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
+
+  async isLoggedIn() {
+    try {
+      const value = await AsyncStorage.getItem('id_token');
+      user_id = value;
+      const user = await AsyncStorage.getItem('username');
+      username = user;
+      if (value !== null){
+        this.setState({isLoggedIn: true})
+      }
+      else {
+        this.setState({viewChange: login});
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  }
 
 }
 
