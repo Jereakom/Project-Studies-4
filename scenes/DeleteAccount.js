@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Map from './Map.js';
 import Users from './Users.js';
 import Profile from './Profile.js'
+import Login from './login.js'
 import {
   AppRegistry,
   StyleSheet,
@@ -16,7 +17,8 @@ import {
   ActivityIndicator,
   BackAndroid,
   AsyncStorage,
-  ListView
+  ListView,
+  ToastAndroid
 } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
@@ -64,7 +66,11 @@ export default class EditProfile extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-      this.setState({viewChange:Login})
+      if(!responseData.response) {
+        this.setState({viewChange:Login})
+      } else {
+        ToastAndroid.show(responseData.response, ToastAndroid.LONG);
+      }
     })
     .done();
   }
