@@ -119,7 +119,7 @@ export default class login extends Component {
         <View style={styles.container}>
           <View style={styles.row}>
             <Image
-              style={{height:height/6, width:width/5*4, marginBottom: 30}}
+              style={{left:-20,height:width/2.878, width:width, marginBottom: 30}}
               source={require('./src/logo.png')}
               />
           </View>
