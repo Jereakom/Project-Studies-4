@@ -140,7 +140,7 @@ export default class CreatePost extends React.Component {
       return (
         <View>
         <Image
-          style={{width:width, height:400}}
+          style={{width:width, height:height/3*2}}
           source={{uri: this.props.children["image"]}}
         />
         <TouchableOpacity style={styles.button} onPress={() => this.uploadImage(this.state.markers[0].img)}>
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    height: 36,
+    height: 45,
     backgroundColor: '#324563',
     borderColor: '#324563',
     borderWidth: 1,

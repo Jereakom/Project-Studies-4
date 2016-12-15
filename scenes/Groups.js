@@ -88,7 +88,7 @@ export default class Groups extends Component {
     const id = await AsyncStorage.getItem('id_token');
     for (var i=0;i<groups.length;i++) {
       if (group.rowData == groups[i]) {
-        let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups/" + group.rowData + "/";
+        let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups/" + group.rowData;
         await fetch(url, {method: "DELETE"})
       }
     }
