@@ -132,13 +132,13 @@ export default class CreatePost extends React.Component {
     if (img == undefined) {
       return (
         <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this._renderMap()}>
-        <Text>Post</Text>
+          <Text>Post</Text>
         </TouchableOpacity>
       )
     } else {
       return (
         <TouchableOpacity style={{ marginHorizontal: 4,}} onPress={() => this.uploadImage(this.state.markers[0].img)}>
-        <Text>Post</Text>
+          <Text>Post</Text>
         </TouchableOpacity>
       )
     }
@@ -157,7 +157,7 @@ export default class CreatePost extends React.Component {
       } else if(ViewChange == Camera) {
         return (
           <ViewChange>
-          {{username: this.props.children["username"]}}
+            {{username: this.props.children["username"]}}
           </ViewChange>
         )
       }
@@ -170,33 +170,33 @@ export default class CreatePost extends React.Component {
     }
     return (
       <View style={styles.container}>
-      <View style={styles.cameraText}>
-      <Icon
-      style={{marginTop: 40}}
-      name="camera"
-      size={45}
-      color="#000"
-      onPress={() => this.setState({viewChange: Camera})} />
-      <TextInput
-      onChangeText={(text) =>
-        this.setState({
-          markers: [
-            {
-              username:this.props.children["username"],
-              key:id++,
-              coordinate: {latitude:this.lat, longitude:this.lon},
-              description:text,
-              pinColor:'#00ff00',
-              img:img,
-            },
-          ],
-        })
-      }
-      style={{height: 80, width: width-60, marginLeft: 10}}
-      placeholder="Type here to leave a message"
-      />
-      </View>
-      {this._renderSubmit(img)}
+        <View style={styles.cameraText}>
+          <Icon
+            style={{marginTop: 40}}
+            name="camera"
+            size={45}
+            color="#000"
+            onPress={() => this.setState({viewChange: Camera})} />
+          <TextInput
+            onChangeText={(text) =>
+              this.setState({
+                markers: [
+                  {
+                    username:this.props.children["username"],
+                    key:id++,
+                    coordinate: {latitude:this.lat, longitude:this.lon},
+                    description:text,
+                    pinColor:'#00ff00',
+                    img:img,
+                  },
+                ],
+              })
+            }
+            style={{height: 80, width: width-60, marginLeft: 10}}
+            placeholder="Type here to leave a message"
+            />
+        </View>
+        {this._renderSubmit(img)}
       </View>
     );
   }

@@ -60,12 +60,12 @@ export default class Friendlist extends Component {
   _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
       <View
-      key={`${sectionID}-${rowID}`}
-      style={{
-        height: adjacentRowHighlighted ? 4 : 3,
-        backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
-      }}
-      />
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 3,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
+        }}
+        />
     );
   }
 
@@ -91,13 +91,13 @@ export default class Friendlist extends Component {
       if (ViewChange == Users) {
         return (
           <ViewChange>
-          {Friends}
+            {Friends}
           </ViewChange>
         );
       } else if(ViewChange == Profile) {
         return (
           <ViewChange>
-          {this.state.profileFriend}
+            {this.state.profileFriend}
           </ViewChange>
         );
       } else {
@@ -109,39 +109,39 @@ export default class Friendlist extends Component {
     if (this.state.hasFetched == true) {
       return (
         <View style={{height: height, backgroundColor: 'white'}}>
-        <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Follows</Text>
-        </View>
-        <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
-        <ListView
-        dataSource={this.state.dataSource}
-        renderRow={(rowData) =>
-          <View>
-          <TouchableOpacity onPress={() => this.friendProfile(rowData)}>
-          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button2} onPress={() => this.removeFriend(rowData)}>
-          <Text style={styles.buttonText}>Remove</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Follows</Text>
           </View>
-        }
-        renderSeparator={this._renderSeparator}
-        />
-        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Users})}>
-        <Text style={styles.buttonText}>Follow</Text>
-        </TouchableOpacity>
-        </View>
+          <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
+            <ListView
+              dataSource={this.state.dataSource}
+              renderRow={(rowData) =>
+                <View>
+                  <TouchableOpacity onPress={() => this.friendProfile(rowData)}>
+                    <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button2} onPress={() => this.removeFriend(rowData)}>
+                    <Text style={styles.buttonText}>Remove</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+              renderSeparator={this._renderSeparator}
+              />
+            <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: Users})}>
+              <Text style={styles.buttonText}>Follow</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
     else {
       return (
         <View style={{height:height, width:width, backgroundColor: '#324563' }}>
-        <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
-        <ActivityIndicator
-        style={[styles.loading, {height: 40}]}
-        size="large"
-        />
+          <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
+          <ActivityIndicator
+            style={[styles.loading, {height: 40}]}
+            size="large"
+            />
         </View>
       )
     }

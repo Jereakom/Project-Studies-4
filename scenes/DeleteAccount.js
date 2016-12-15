@@ -84,21 +84,21 @@ export default class EditProfile extends Component {
     }
     return (
       <View style={{flexDirection: 'column', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
-      <Text style={{marginTop:10, marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Insert your current password </Text>
-      <View style={{flexDirection: 'row', width:width-20}}>
-      <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Password : </Text>
-      <TextInput
-      style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
-      onChangeText={(password) => this.setState({password})}
-      value={this.state.password}
-      />
-      </View>
-      <TouchableOpacity style={styles.button_edit} onPress={() => this.deleteButtonPress()}>
-      <Text style={styles.buttonText}>Confirm</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
-      <Text style={styles.buttonText}>CANCEL</Text>
-      </TouchableOpacity>
+        <Text style={{marginTop:10, marginBottom:10,fontSize: 20, color: 'white', backgroundColor:'#324563'}}> Insert your current password </Text>
+        <View style={{flexDirection: 'row', width:width-20}}>
+          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Password : </Text>
+          <TextInput
+            style={{flex:1,height: 40, borderColor: '#324563', borderWidth: 2}}
+            onChangeText={(password) => this.setState({password})}
+            value={this.state.password}
+            />
+        </View>
+        <TouchableOpacity style={styles.button_edit} onPress={() => this.deleteButtonPress()}>
+          <Text style={styles.buttonText}>Confirm</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: Profile})}>
+          <Text style={styles.buttonText}>CANCEL</Text>
+        </TouchableOpacity>
       </View>
     );
   }

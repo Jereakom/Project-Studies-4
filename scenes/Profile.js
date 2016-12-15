@@ -78,13 +78,13 @@ export default class Profile extends Component {
     if(!this.props.children) {
       return (
         <View style={{flexDirection: 'column', height: height-170, width:width, padding: 10, backgroundColor: 'white'}}>
-        <Text style={{marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
-        <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
-        <Text style={styles.buttonText}>Edit Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: DeleteAccount})}>
-        <Text style={styles.buttonText}>Delete Account</Text>
-        </TouchableOpacity>
+          <Text style={{marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
+          <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
+            <Text style={styles.buttonText}>Edit Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button_delete} onPress={() => this.setState({viewChange: DeleteAccount})}>
+            <Text style={styles.buttonText}>Delete Account</Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -94,13 +94,13 @@ export default class Profile extends Component {
     if(!this.props.children) {
       return (
         <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Profile</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Profile</Text>
         </View>
       )
     } else {
       return (
         <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Profile of {username}</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>Profile of {username}</Text>
         </View>
       )
     }
@@ -116,23 +116,23 @@ export default class Profile extends Component {
     if (this.state.hasFetched == true) {
       return (
         <View style={{height: height, backgroundColor: 'white'}}>
-        {this._renderTitle()}
-        <View style={{flexDirection: 'column', height: 100, width:width, padding: 10, backgroundColor: 'white'}}>
-        <Text style={{marginTop:10, marginBottom:20,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
-        </View>
-        {this._renderOwnProfile()}
+          {this._renderTitle()}
+          <View style={{flexDirection: 'column', height: 100, width:width, padding: 10, backgroundColor: 'white'}}>
+            <Text style={{marginTop:10, marginBottom:20,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
+          </View>
+          {this._renderOwnProfile()}
         </View>
       );
     }
     else {
       return (
         <View style={{height:height, width:width, backgroundColor: '#324563' }}>
-        <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
-        <ActivityIndicator
-        style={[styles.loading, {height: 40}]}
-        size="large"
-        />
+          <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
+          <ActivityIndicator
+            style={[styles.loading, {height: 40}]}
+            size="large"
+            />
         </View>
       )
     }
