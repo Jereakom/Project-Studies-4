@@ -127,7 +127,7 @@ export default class Register extends Component {
         <View style={styles.container}>
           <View style={styles.row}>
             <Image
-              style={{height:height/6, width:width-60, marginBottom: 30}}
+              style={{height:height/6, width:width/5*4, marginBottom: 30}}
               source={require('./src/logo.png')}
               />
           </View>
