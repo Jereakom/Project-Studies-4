@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 const { width, height } = Dimensions.get('window');
 var groups = [];
+var groupIds = [];
 var ds = new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2});
 
 export default class Groups extends Component {
@@ -64,12 +65,12 @@ export default class Groups extends Component {
   _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
       <View
-      key={`${sectionID}-${rowID}`}
-      style={{
-        height: adjacentRowHighlighted ? 4 : 3,
-        backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
-      }}
-      />
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 3,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#324563',
+        }}
+        />
     );
   }
 
@@ -83,13 +84,24 @@ export default class Groups extends Component {
     this.setState({viewChange: Groups});
   }
 
+  async leaveGroup(group) {
+    const id = await AsyncStorage.getItem('id_token');
+    for (var i=0;i<groups.length;i++) {
+      if (group.rowData == groups[i]) {
+        let url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups/" + group.rowData + "/";
+        await fetch(url, {method: "DELETE"})
+      }
+    }
+    this.setState({viewChange: Groups});
+  }
+
   render() {
     if (this.state.viewChange) {
       const ViewChange = this.state.viewChange;
       if (ViewChange == JoinGroups) {
         return (
           <ViewChange>
-          {groups}
+            {groups}
           </ViewChange>
         );
       }
@@ -101,41 +113,44 @@ export default class Groups extends Component {
     }
     if (this.state.hasFetched == true) {
       return (
-        <View>
-        <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Groups</Text>
-        </View>
-        <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
-        <ListView
-        dataSource={this.state.dataSource}
-        renderRow={(rowData) =>
-          <View>
-          <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
-          <TouchableOpacity style={styles.button2} onPress={() => this.removeGroup({rowData})}>
-          <Text style={styles.buttonText}>Remove</Text>
-          </TouchableOpacity>
+        <View style={{height: height, backgroundColor: 'white'}}>
+          <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Groups</Text>
           </View>
-        }
-        renderSeparator={this._renderSeparator}
-        />
-        <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: JoinGroups})}>
-        <Text style={styles.buttonText}>Join a Group</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button3} onPress={() => this.setState({viewChange: CreateGroup})}>
-        <Text style={styles.buttonText}>Create a Group</Text>
-        </TouchableOpacity>
-        </View>
+          <View style={{flexDirection: 'row', height: height-90, width:width, padding: 10, backgroundColor: 'white'}}>
+            <ListView
+              dataSource={this.state.dataSource}
+              renderRow={(rowData) =>
+                <View>
+                  <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>{rowData}</Text>
+                  <TouchableOpacity style={styles.button4} onPress={() => this.leaveGroup({rowData})}>
+                    <Text style={styles.buttonText}>Leave</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button2} onPress={() => this.removeGroup({rowData})}>
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              }
+              renderSeparator={this._renderSeparator}
+              />
+            <TouchableOpacity style={styles.button} onPress={() => this.setState({viewChange: JoinGroups})}>
+              <Text style={styles.buttonText}>Join a Group</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button3} onPress={() => this.setState({viewChange: CreateGroup})}>
+              <Text style={styles.buttonText}>Create a Group</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
     else {
       return (
         <View style={{height:height, width:width, backgroundColor: '#324563' }}>
-        <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
-        <ActivityIndicator
-        style={[styles.loading, {height: 40}]}
-        size="large"
-        />
+          <Text style ={{color:'white',textAlign: 'center',fontSize: 20}}>Loading...</Text>
+          <ActivityIndicator
+            style={[styles.loading, {height: 40}]}
+            size="large"
+            />
         </View>
       )
     }
@@ -179,6 +194,19 @@ const styles = StyleSheet.create({
     left:width/2,
     height: 45,
     width: width/2,
+    backgroundColor: '#324563',
+    borderColor: '#5576aa',
+    borderWidth: 2,
+    borderRadius: 30,
+    alignSelf: 'stretch',
+    justifyContent: 'center'
+  },
+  button4: {
+    position: 'absolute',
+    bottom:0,
+    left:width-180,
+    height: 45,
+    width: width/4,
     backgroundColor: '#324563',
     borderColor: '#5576aa',
     borderWidth: 2,

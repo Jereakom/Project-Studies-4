@@ -124,29 +124,29 @@ export default class Register extends Component {
     else {
       return (
         <View style={styles.container}>
-        <View style={styles.row}>
-        <Image
-        style={{width:width, height:100, marginBottom: 30}}
-        source={require('./src/logo.png')}
-        />
-        </View>
-        <View style={styles.row}>
-        <Form
-        ref="form"
-        type={Person}
-        options={options}
-        />
-        </View>
-        <View style={styles.row}>
+          <View style={styles.row}>
+            <Image
+              style={{width:width, height:100, marginBottom: 30}}
+              source={require('./src/logo.png')}
+              />
+          </View>
+          <View style={styles.row}>
+            <Form
+              ref="form"
+              type={Person}
+              options={options}
+              />
+          </View>
+          <View style={styles.row}>
 
-        <TouchableOpacity style={styles.button} onPress={this._userRegistration.bind(this)} underlayColor='#ffffff'>
-        <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this._userRegistration.bind(this)} underlayColor='#ffffff'>
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
 
-        </View>
-        <View style={styles.row}>
+          </View>
+          <View style={styles.row}>
 
-        </View>
+          </View>
         </View>
       );
     }
