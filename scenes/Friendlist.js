@@ -108,7 +108,7 @@ export default class Friendlist extends Component {
     }
     if (this.state.hasFetched == true) {
       return (
-        <View>
+        <View style={{height: height, backgroundColor: 'white'}}>
         <View style={{flexDirection: 'row', height: 45, padding: 10, backgroundColor: '#324563'}}>
         <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>My Follows</Text>
         </View>
