@@ -65,13 +65,18 @@ export default class login extends Component {
     }
   };
 
+  async setGroupChoice() {
+    await AsyncStorage.setItem('Preference', 'all');
+    await AsyncStorage.setItem('GroupChoice', 'other');
+  }
+
   _userLogin() {
     var value = this.refs['form'].getValue();
     var details = {
       'username': value.username,
       'password': value.password
     };
-
+    this.setGroupChoice();
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
