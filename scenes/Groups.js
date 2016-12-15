@@ -76,7 +76,7 @@ export default class Groups extends Component {
     for (var i=0;i<groups.length;i++) {
       if (group.rowData == groups[i]) {
         let url = "http://thegrid.northeurope.cloudapp.azure.com/groups/" + group.rowData;
-        fetch(url, {method: "DELETE"})
+        await fetch(url, {method: "DELETE"})
       }
     }
     this.setState({viewChange: Groups});
