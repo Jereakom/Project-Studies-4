@@ -48,6 +48,7 @@ export default class Groups extends Component {
   }
 
   async fetchGroups(){
+    await AsyncStorage.setItem('GroupChoice', 'other');
     const id = await AsyncStorage.getItem('id_token');
     fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/groups")
     .then((response) => response.json())

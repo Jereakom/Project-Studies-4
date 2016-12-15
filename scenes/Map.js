@@ -113,6 +113,7 @@ export default class Map extends Component {
   }
 
   async getPosts() {
+    await AsyncStorage.setItem('GroupChoice', 'other');
     let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts');
     let responseJson = await response.json();
     const user = await AsyncStorage.getItem('username');
@@ -255,6 +256,7 @@ export default class Map extends Component {
       }
     }
     await AsyncStorage.setItem('Preference', 'group');
+    await AsyncStorage.setItem('GroupChoice', group);
     this.setState({showList:false});
     this.setState({showGroupsBGColor: 'white',
     showGroupsTextColor: '#324563'});
@@ -295,6 +297,7 @@ export default class Map extends Component {
   }
 
   async taggedPosts(){
+    await AsyncStorage.setItem('GroupChoice', 'other');
     const user = await AsyncStorage.getItem('username');
     let response = await fetch('http://thegrid.northeurope.cloudapp.azure.com/posts/users/' + user);
     let responseJson = await response.json();
@@ -333,6 +336,7 @@ export default class Map extends Component {
 }
 
 async friendsPosts() {
+  await AsyncStorage.setItem('GroupChoice', 'other');
   const token = await AsyncStorage.getItem('id_token');
   const user = await AsyncStorage.getItem('username');
   var url = "http://thegrid.northeurope.cloudapp.azure.com/users/" + token + "/" + "friends";
@@ -419,22 +423,22 @@ async checkPreference(){
     this.setState({showGroupsBGColor: '#324563',
     showGroupsTextColor: 'white'});
   }
-  else {
-    await AsyncStorage.setItem('Preference', 'all');
-    pref = 'all';
-    this.setState({showAllBGColor: 'white',
-    showAllTextColor: '#324563'});
-  }
   return pref;
 }
 
 async initPreference(){
   var pref = await this.checkPreference();
-  if (pref == 'group') {
+  var group_choice = await AsyncStorage.getItem('GroupChoice');
+  if (pref == 'group' && group_choice!='other') {
+    await this.groupPosts(group_choice);
+  }
+  else if (pref == 'group' && group_choice=='other') {
     await AsyncStorage.setItem('Preference', 'all');
     var pref = await this.checkPreference();
   }
-  await this.sync(pref);
+  if (pref != 'group') {
+    await this.sync(pref);
+  }
 }
 
 async changePreference(pref){
@@ -519,7 +523,7 @@ render() {
       </MenuTrigger>
       <MenuOptions optionsContainerStyle={{marginTop: 45, width: 150, height: 250, backgroundColor: 'white'}}>
       <MenuOption value={1}>
-      <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563'}}>User ID : {user_id}</Text>
+      <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', backgroundColor: '#324563', textAlign: 'center'}}>{username}</Text>
       </MenuOption>
       <MenuOption value={2}>
       <TouchableOpacity onPress={() => this.setState({viewChange: Profile})}>
