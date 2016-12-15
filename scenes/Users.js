@@ -60,7 +60,6 @@ export default class Users extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    console.log(formBody);
     fetch("http://thegrid.northeurope.cloudapp.azure.com/users/" + id + "/friends", {
       method: "POST",
       headers: {

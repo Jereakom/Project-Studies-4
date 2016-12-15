@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import logo from './src/logo.png';
 const { width, height } = Dimensions.get('window');
-//var t = require('tcomb-form-native');
 var t = require('tcomb-form-native');
 var _ = require('lodash');
 
