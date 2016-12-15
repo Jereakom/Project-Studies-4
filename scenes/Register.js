@@ -80,14 +80,15 @@ export default class Register extends Component {
     }
   };
 
-  _userRegistration() {
+  async _userRegistration() {
     var value = this.refs['form'].getValue();
     var details = {
       'username': value.username,
       'password': value.password,
       'email': value.email
     };
-
+    await AsyncStorage.setItem('Preference', 'all');
+    await AsyncStorage.setItem('GroupChoice', 'other');
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
@@ -126,7 +127,7 @@ export default class Register extends Component {
         <View style={styles.container}>
           <View style={styles.row}>
             <Image
-              style={{width:width, height:100, marginBottom: 30}}
+              style={{left: -15, height:height/5, width:width-10, marginBottom: 30}}
               source={require('./src/logo.png')}
               />
           </View>

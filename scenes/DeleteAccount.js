@@ -67,6 +67,7 @@ export default class EditProfile extends Component {
     .then((response) => response.json())
     .then((responseData) => {
       if(!responseData.response) {
+        AsyncStorage.clear();
         this.setState({viewChange:Login})
       } else {
         ToastAndroid.show(responseData.response, ToastAndroid.LONG);
