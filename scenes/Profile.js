@@ -77,8 +77,8 @@ export default class Profile extends Component {
   _renderOwnProfile() {
     if(!this.props.children) {
       return (
-        <View style={{flexDirection: 'column', height: height/5.5*4.7-90, width:width, padding: 10, backgroundColor: 'white'}}>
-        <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
+        <View style={{flexDirection: 'column', height: height-170, width:width, padding: 10, backgroundColor: 'white'}}>
+        <Text style={{marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Email : {email}</Text>
         <TouchableOpacity style={styles.button_edit} onPress={() => this.setState({viewChange: EditProfile})}>
         <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
@@ -117,9 +117,9 @@ export default class Profile extends Component {
       return (
         <View style={{height: height, backgroundColor: 'white'}}>
         {this._renderTitle()}
-        <View style={{flexDirection: 'column', height: height/5.5, width:width, padding: 10, backgroundColor: 'white'}}>
-        <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
-        <Text style={{marginTop:10, marginBottom:10,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
+        <View style={{flexDirection: 'column', height: 100, width:width, padding: 10, backgroundColor: 'white'}}>
+        <Text style={{marginTop:10, marginBottom:20,fontSize: 20, fontWeight: 'bold', color: '#324563'}}>User ID : {id}</Text>
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#324563'}}>Username : {username}</Text>
         </View>
         {this._renderOwnProfile()}
         </View>
